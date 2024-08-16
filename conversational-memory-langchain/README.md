@@ -1,0 +1,134 @@
+## Chatbots with Good Memory: Cerebras & LangChain
+
+This tutorial outlines the setup, code structure, and how conversational memory is managed using LangChain for a chatbot implemented with the Cerebras API and Streamlit. Try testing out this chatbot's memory and switching between models to observe token metrics.
+
+![finished product](https://gist.github.com/user-attachments/assets/550baaf0-ea16-4ca2-90f0-8b6ac22b05ea.png)
+
+### Step 1: Set up your API Key
+
+1. **Obtain Your API Key**: Log in to your Cerebras account, navigate to the “API Keys” section, and generate a new API key.
+
+2. **Set the API Key in the Sidebar**: Simply grab your Cerebras API key and stick it in the textbox in the sidebar.
+
+### Step 2: Install the Cerebras Inference Library
+
+You need to install the Cerebras Inference library to interact with the API by using repl's built in `Shell`. Use the following command to install the library:
+
+```bash
+pip install https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/test/cerebras_cloud_sdk-0.5.0-py3-none-any.whl
+```
+
+Go ahead and also run `pip install -r requirements.txt` to install other requirements as well!
+
+### Step 3: Start Chatting with Memory 🧠
+Press RUN and then run the command `streamlit run main.py` in Shell to interact with the UI.
+
+### **Code Structure**
+
+1. **Custom LLM Implementation**
+    LangChain currently doesn't have a Cerebras method, but we can create our own using this [handy tutorial](https://python.langchain.com/v0.1/docs/modules/model_io/llms/custom_llm/).
+   
+   **CerebrasLLM Class**: This class enables the implementation of Cerebras's LLM with LangChain. It can be called like so: `CerebrasLLM(api_key=api_key, model_name=model_name)`
+
+   ```python
+   class CerebrasLLM(LLM):
+   """A custom LLM implementation for the Cerebras API."""
+
+       api_key: str
+       model_name: str
+
+       # Class continues
+   ```
+
+3. **Streamlit Application**
+   Streamlit allows an easy way to implement our chatbot using Python with a simple dropdown and input box.
+
+   ```python
+   # Initialize history and chatbot memory
+   if 'history' not in st.session_state:
+       st.session_state.history = []
+
+   if 'memory' not in st.session_state:
+       st.session_state.memory = ConversationBufferWindowMemory(k=conversational_memory_length, memory_key="chat_history", return_messages=True)
+
+   if "selected_model" not in st.session_state:
+       st.session_state.selected_model = None
+    ```
+
+   Streamlit stores our bot's chat history, memory, and selected model in its session history.
+
+### **Conversational Memory with LangChain**
+
+1. **Initialization of Memory**
+
+   **Setting Up Conversation Memory**
+
+   ```python
+   if 'memory' not in st.session_state:
+       st.session_state.memory = ConversationBufferWindowMemory(
+           k=conversational_memory_length,
+           memory_key="chat_history",
+           return_messages=True
+       )
+   ```
+
+   `ConversationBufferWindowMemory` from LangChain is used to manage conversational memory. It retains a fixed number of the most recent messages (`k=5` in this case), allowing the chatbot to maintain context throughout the conversation.
+
+2. **Memory Handling in Conversation Chain**
+
+   **Integrating Memory into the Chat**
+    ```python
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            SystemMessage(
+                content=system_prompt
+            ),  # This is the persistent system prompt that is always included at the start of the chat.
+    
+            MessagesPlaceholder(
+                variable_name="chat_history"
+            ),  # This placeholder will be replaced by the actual chat history during the conversation. It helps in maintaining context.
+    
+            HumanMessagePromptTemplate.from_template(
+                "{human_input}"
+            ),  # This template is where the user's current input will be injected into the prompt.
+        ]
+    )
+    ```
+   The provided code snippet creates a `ChatPromptTemplate` using LangChain, which structures prompts for a chatbot. This setup ensures that each prompt sent to the language model includes both the fixed system instructions ("You are a friendly chatbot") and the updated chat history, allowing the chatbot to generate contextually relevant responses based on the entire conversation.
+   
+   ```python
+   conversation = LLMChain(
+       llm=cerebras_llm,  # Custom LLM instance
+       prompt=prompt,  # Constructed prompt template
+       verbose=False,
+       memory=st.session_state.memory  # Conversation memory instance
+   )
+   ```
+
+   The `LLMChain` object is configured with the `ConversationBufferWindowMemory` instance. This setup allows the chatbot to use the stored conversation history for generating contextually relevant responses.
+
+   ```python
+   # Initialize the Cerebras LLM object
+   cerebras_llm = CerebrasLLM(api_key=api_key, model_name=st.session_state.selected_model)
+   ```
+`cerebras_llm` is our custom LLM instance, which was initialized in the code, as seen above.
+
+   ```python
+   # The chatbot's answer is generated by sending the full prompt to the Groq API.
+   response = conversation.predict(human_input=user_input)
+   ```
+Once the conversation chain has been continued, we can use the `conversation` object to predict the next response using all previous context contained in `memory`.
+
+4. **Updating and Displaying History**
+
+   ```python
+   st.session_state.history.append(f"User: {user_input}")
+   st.session_state.history.append(f"Chatbot: {response}")
+
+   if st.session_state.history:
+       st.write("### Conversation History:")
+       for message in st.session_state.history:
+           st.write(message)
+   ```
+
+   The conversation history is updated with each user input and chatbot response. This history is then displayed in the Streamlit application, providing users with a record of the conversation.
