@@ -34,28 +34,28 @@ This repository contains multiple example projects, each demonstrating different
 
 ### 🔗 Example Projects
 
-- **[Getting started with Cerebras Inference API](./getting-started-with-cerebras-inference-api/README.md)**
+- **[Getting Started with Cerebras Inference API](./getting-started/README.md)**
   - Learn how to get started with the Cerebras Inference API for your AI projects.
 
-- **[Conversational Memory for LLMs with Langchain](./conversational-memory-with-langchain/README.md)**
+- **[Conversational Memory with Langchain](./conversational-memory-langchain/README.md)**
   - Explore how to build conversational memory for LLMs using Langchain.
 
-- **[RAG with Pinecone + Docker](./rag-with-pinecone-and-docker/README.md)**
+- **[RAG with Pinecone + Docker](./rag-pinecone-docker/README.md)**
   - Implement Retrieval-Augmented Generation (RAG) using Pinecone and Docker.
 
-- **[RAG with Weaviate + HuggingFace](./rag-with-weaviate-and-huggingface/README.md)**
+- **[RAG with Weaviate + HuggingFace](./rag-weaviate-huggingface/README.md)**
   - Implement Retrieval-Augmented Generation (RAG) using Weaviate and HuggingFace.
 
-- **[Getting started with Cerebras + Streamlit](./getting-started-with-cerebras-and-streamlit/README.md)**
+- **[Getting Started with Cerebras + Streamlit](./cerebras-streamlit/README.md)**
   - Learn how to integrate Cerebras with Streamlit to build interactive applications.
 
-- **[AI Agentic Workflow Example with LlamaIndex](./ai-agentic-workflow-with-llamaindex/README.md)**
+- **[AI Agentic Workflow with LlamaIndex](./ai-workflow-llamaindex/README.md)**
   - Build an AI agentic workflow using LlamaIndex.
 
-- **[AI Agentic Workflow Example with Langchain](./ai-agentic-workflow-with-langchain/README.md)**
+- **[AI Agentic Workflow with Langchain](./ai-workflow-langchain/README.md)**
   - Build an AI agentic workflow using Langchain.
 
-- **[Multi AI Agentic Workflow Example with Langgraph + LangSmith](./multi-ai-agentic-workflow-with-langgraph-and-langsmith/README.md)**
+- **[Multi AI Agentic Workflow](./multi-ai-workflow/README.md)**
   - Create a multi-agentic AI workflow with Langgraph and LangSmith.
 
 ---
