@@ -1,0 +1,9 @@
+langgraph
+langchain
+langchain-openai
+langchain-core
+langsmith
+streamlit
+pandas
+langchain_experimental
+matplotlib
