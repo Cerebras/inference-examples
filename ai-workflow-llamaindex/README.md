@@ -1,4 +1,4 @@
-## Crypto Agentic Workflows: LlamaIndex
+## "Alien" Agentic Workflows: LlamaIndex
 
 This tutorial outlines the setup, code structure, and the implementation of a simple agentic workflow using Cerebras and LlamaIndex.
 

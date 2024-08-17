@@ -15,6 +15,7 @@ Creating a system to answer questions based on PDF content involves integrating 
 You need to install the Cerebras Inference library to interact with the API. Use the following command to install the library along with other dependencies:
 
 ```bash
+pip install https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/test/cerebras_cloud_sdk-0.5.0-py3-none-any.whl
 pip install -r requirements.txt
 ```
 
