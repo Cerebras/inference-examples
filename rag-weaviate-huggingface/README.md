@@ -84,7 +84,7 @@ Our code has four major components to make this system work.
 
 Retrieval-Augmented Generation (RAG) is a technique that combines the strengths of information retrieval and text generation models. Think about some exams you had to do earlier in your schooling: you couldn't answer all the questions without a background article provided by your teacher. That's what we're doing - providing background information to the LLM so it can answer questions about it.
 
-**Initialization**
+#### Initialization
 
 We can create a Weaviate client using the user's API key and their cluster's URL.
 ```python
@@ -95,7 +95,7 @@ client = weaviate.connect_to_weaviate_cloud(
 )
 ```
 
-**Document Retrieval and Indexing**
+#### Document Retrieval and Indexing
 * **Text Chunking:** The PDF content is split into smaller chunks using `RecursiveCharacterTextSplitter`.
 ```python
 from langchain.document_loaders import PyPDFLoader
@@ -128,7 +128,7 @@ texts = text_splitter.split_documents(data)
       progress_bar.progress((i + 1) / len(texts), "Indexing PDF content... (this may take a bit) 🦙")
   ```
 
-**Query Processing**
+#### Query Processing
 * **Similarity Search:** Weaviate performs a similarity search to retrieve the most relevant text chunks based on the user's query.
 ```python
 # Perform similarity search
