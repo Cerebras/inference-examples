@@ -59,9 +59,7 @@ Press RUN and then run the command `streamlit run main.py` in Shell to interact 
 
 ### **Conversational Memory with LangChain**
 
-1. **Initialization of Memory**
-
-   **Setting Up Conversation Memory**
+#### Initialization of Memory
 
    ```python
    if 'memory' not in st.session_state:
@@ -74,9 +72,8 @@ Press RUN and then run the command `streamlit run main.py` in Shell to interact 
 
    `ConversationBufferWindowMemory` from LangChain is used to manage conversational memory. It retains a fixed number of the most recent messages (`k=5` in this case), allowing the chatbot to maintain context throughout the conversation.
 
-2. **Memory Handling in Conversation Chain**
+#### Memory Handling in Conversation Chain
 
-   **Integrating Memory into the Chat**
     ```python
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -119,7 +116,7 @@ Press RUN and then run the command `streamlit run main.py` in Shell to interact 
    ```
 Once the conversation chain has been continued, we can use the `conversation` object to predict the next response using all previous context contained in `memory`.
 
-4. **Updating and Displaying History**
+#### Updating and Displaying History
 
    ```python
    st.session_state.history.append(f"User: {user_input}")
