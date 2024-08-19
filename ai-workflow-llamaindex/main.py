@@ -6,8 +6,24 @@ import io
 import contextlib
 import re
 
+repl_link = "https://replit.com/@EmilyChen10/AI-Agentic-Workflow-Example-with-LlamaIndex-V2#main.py"
+
 # Start of Streamlit Application
 st.title("AlienMath 🧮👽")
+
+# Repl Button
+st.markdown("""
+<style>.element-container:has(#button-after) + div button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;     
+    }</style>""", unsafe_allow_html=True)
+
+# Button with custom CSS class
+st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
+if st.button('Spin up your own on Repl.it :material/code:', type='primary'):
+    webbrowser.open(repl_link)
 
 # Load secrets
 with st.sidebar:
@@ -92,6 +108,6 @@ if st.button("Generate output"):
 
         st.subheader("Your result:")
         st.write(response.response)
-        
+
     else:
         st.warning("Please enter a topic.")
