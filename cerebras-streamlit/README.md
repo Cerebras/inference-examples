@@ -6,11 +6,7 @@ Streamlit is a simple way to deploy machine learning and other data science appl
 
 1. **Obtain Your API Key**: Log in to your Cerebras account, navigate to the “API Keys” section, and generate a new API key.
 
-2. **Set the API Key as an Environment Variable**: For security, store your API key as a secret in your repl! Here's [more information](https://docs.replit.com/replit-workspace/workspace-features/secrets) on how to do that.
-
-![setting a secret](https://gist.github.com/user-attachments/assets/25a2741e-859f-4ba3-a105-a78435e89fb4.png)
-
-   This ensures that your API key is available to your script without hardcoding it directly.
+2. **Set the API Key in the Sidebar**: Once you have the Cerebras API key, add it to the sidebar on the left.
 
 ### Step 2: Install the Cerebras Inference Library
 
@@ -24,10 +20,6 @@ Go ahead and also run `pip install -r requirements.txt` to install other require
 
 ### Step 3: Streamline your Streamlit Experience 
 Press RUN and then run the command `streamlit run main.py` in Shell to interact with the UI.
-
-Certainly! Let’s break down the provided code into sections and explain how each part showcases a feature of Streamlit. We will also include a section at the end detailing how to deploy a Streamlit app.
-
----
 
 ### Code Overview
 
