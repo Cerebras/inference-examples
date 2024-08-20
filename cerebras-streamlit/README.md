@@ -22,35 +22,11 @@ Press RUN and then run the command `streamlit run main.py` in Shell to interact 
 
 ### Code Overview
 
-#### **Custom Button**
-
-```python
-import streamlit as st
-from cerebras.cloud.sdk import Cerebras
-import webbrowser
-
-# Repl Button
-st.markdown("""
-<style>.element-container:has(#button-after) + div button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;     
-    }</style>""", unsafe_allow_html=True)
-
-# Button with custom CSS class
-st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
-if st.button('Spin up your own on Repl.it :material/code:', type='primary'):
-    webbrowser.open(repl_link)
-```
-- `st.markdown`: Used to add markdown text to the webpage. In this case, it is used to create custom CSS components and styling to generate a button that floats on the bottom right corner of the screen.
-- `st.button`: Creates a button, in this case, to open a link.
-
 #### **Page Configuration and Icon**
 
 ```python
 st.set_page_config(page_icon="🤖", layout="wide",
-       page_title="CerebrasLite")
+       page_title="Cerebras")
 
 def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
@@ -60,7 +36,7 @@ def icon(emoji: str):
     )
 
 icon("🧠")
-st.title("CerebrasLite")
+st.title("Cerebras")
 st.subheader("Deploying Cerebras on Streamlit", divider="orange", anchor=False)
 ```
 
@@ -72,6 +48,8 @@ st.subheader("Deploying Cerebras on Streamlit", divider="orange", anchor=False)
 
 ```python
 with st.sidebar:
+    if st.button('Spin up your own on Repl.it :material/code:', type='secondary'):
+        webbrowser.open(repl_link)
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")
@@ -91,6 +69,7 @@ if not api_key:
 ```
 
 - `st.sidebar`: Creates a sidebar layout, which is useful for settings or inputs that are not part of the main content area.
+- `st.button`: Creates new button that links to an external web page.
 - `st.text_input`: Allows users to input their Cerebras API Key securely. The `type="password"` option hides the input text for security.
 - `st.markdown`: Displays instructions and a welcome message in Markdown format, providing user guidance on how to start using the app.
 - `st.stop()`: Stops further execution if the API key is not provided, ensuring that the app does not run without necessary credentials.
