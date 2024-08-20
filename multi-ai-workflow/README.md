@@ -181,25 +181,8 @@ prompt = (
     "If the information is not sufficient, respond with 'insufficient' and provide a new, creative query suggestion to improve the results. "
     "If the research results appear repetitive or not diverse enough, think about a very different kind of question that could yield more varied and relevant information. "
     "Consider the depth, relevance, and completeness of the information when making your decision.\n\n"
-    "Example 1:\n"
-    "Used queries: What are the benefits of a Mediterranean diet?\n"
-    "Research: The Mediterranean diet includes fruits, vegetables, whole grains, and healthy fats.\n"
-    "Evaluation: Insufficient\n"
-    "New query: Detailed health benefits of a Mediterranean diet\n\n"
-    "Example 2:\n"
-    "Used queries: How does solar power work?\n"
-    "Research: Solar power works by converting sunlight into electricity using photovoltaic cells.\n"
-    "Evaluation: Sufficient\n\n"
-    "Example 3:\n"
-    "Used queries: Effects of climate change on polar bears?\n"
-    "Research: Climate change is reducing sea ice, affecting polar bear habitats.\n"
-    "Evaluation: Insufficient\n"
-    "New query: How are polar bears adapting to the loss of sea ice due to climate change?\n\n"
-    "Now evaluate the following:\n"
-    f"Used queries: {query}\n"
-    f"Research: {research}\n\n"
-    "Evaluation (sufficient/insufficient):\n"
-    "New query (if insufficient):"
+    # ...
+    # Provide examples of "used queries," "research," "evaluation," and a new query based on that information
 )
 
 start_time = time.perf_counter()
