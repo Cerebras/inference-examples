@@ -1,4 +1,5 @@
 import os
+import time
 import streamlit as st
 from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
@@ -74,10 +75,16 @@ class ResearchAgent:
     
     def search(self, state: State):
         search = TavilySearchResults(max_results=1)
+
+        start_time = time.perf_counter()
         optimized_query = self.format_search(state.get('query', "")[-1].content)
+        end_time = time.perf_counter()
+
         results = search.invoke(optimized_query)
 
         state["optimized_query"] = optimized_query
+
+        final_result.append({"subheader": f"Research Iteration", "content": [results[0]["content"]], "time": end_time - start_time})
 
         return {"research": [results[0]["content"]]}
     
@@ -90,8 +97,6 @@ class EditorAgent:
         
         if iteration_count is None:
             iteration_count = 1
-
-        final_result.append({"subheader": f"Research Iteration {iteration_count}", "content": research})
         
         if iteration_count >= 3:
             return {"content_ready": True}
@@ -123,10 +128,13 @@ class EditorAgent:
             "New query (if insufficient):"
         )
         
+        start_time = time.perf_counter()
         response = llm.invoke(prompt)
+        end_time = time.perf_counter()
+
         evaluation = response.content.strip()
 
-        final_result.append({"subheader": f"Editor Evaluation Iteration {iteration_count}", "content": evaluation})
+        final_result.append({"subheader": f"Editor Evaluation Iteration", "content": evaluation, "time": end_time - start_time})
 
         if "new query:" in evaluation.lower():
             new_query = evaluation.split("New query:", 1)[-1].strip()
@@ -181,14 +189,51 @@ st.info("ex: What are the differences between LangChain and LangGraph?")
 if st.button("Generate output"):
     if user_input:
         with st.spinner("Generating blog post..."):
+            start_time = time.perf_counter()
             blogpost = graph.invoke({"query": user_input})
+            end_time = time.perf_counter()
 
         # Display intermediate steps
         st.subheader("Intermediate Steps")
         for step in final_result:
-            with st.expander(step["subheader"], expanded=True):
-                st.write(step["content"])
+            if "Research" in step["subheader"]:
+                # Custom CSS 
+                st.markdown(
+                    '''
+                    <style>
+                    .eqpbllx1 {
+                        background-color: black; # Adjust this for expander header color
+                    }
+                    .eqpbllx0 {
+                        background-color: black; # Expander content color
+                    }
+                    </style>
+                    ''',
+                    unsafe_allow_html=True
+                )
+                with st.expander(step["subheader"], expanded=True):
+                    st.write(step["content"][0])
+                    st.write(f"Time taken: {step['time']:.2f} seconds")
+            else:
+                # Custom CSS 
+                st.markdown(
+                    '''
+                    <style>
+                    .eqpbllx1 {
+                        background-color: #4f1118; # Adjust this for expander header color 
+                    }
+                    .eqpbllx0 {
+                        background-color: #4f1118; # Expander content color
+                    }
+                    </style>
+                    ''',
+                    unsafe_allow_html=True
+                )
+                with st.expander(step["subheader"], expanded=True):
+                    st.write(step["content"])
+                    st.write(f"Time taken: {step['time']:.2f} seconds")
 
         # Display final blog post
         st.subheader("Final Blog Post")
+        st.write(f"Time taken: {end_time - start_time:.2f} seconds")
         st.write(blogpost["content"])
