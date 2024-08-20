@@ -20,12 +20,11 @@ This guide will help you set up and use the Cerebras API to interact with genera
 
    This ensures that your API key is available to your script without hardcoding it directly.
 
-### Step 2: Install the Cerebras Inference Library
+### Step 2: Install dependencies
 
-You need to install the Cerebras Inference library to interact with the API by using repl's built in `Shell`. Use the following command to install the library:
-
+Let's make sure we have all of the requirements for this project installed!
 ```bash
-pip install https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/test/cerebras_cloud_sdk-0.5.0-py3-none-any.whl
+pip install -r requirements.txt
 ```
 
 ### Step 3: Start Chatting

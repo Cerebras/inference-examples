@@ -13,12 +13,10 @@ This tutorial outlines how to build a three-agent workflow (researcher, editor, 
 
 2. **Set the API Keys in the Sidebar**: Once you have the Cerebras, Tavily, & LangChain API keys, add them to the sidebar on the left.
 
-### Step 2: Install the Cerebras Inference Library
+### Step 2: Install dependencies
 
-You need to install the Cerebras Inference library to interact with the API. Use the following command to install the library along with other dependencies:
-
+Let's make sure we have all of the requirements for this project installed!
 ```bash
-pip install https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/test/cerebras_cloud_sdk-0.5.0-py3-none-any.whl
 pip install -r requirements.txt
 ```
 

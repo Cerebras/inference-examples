@@ -2,6 +2,8 @@
 
 What's better than data? Synthetic data! (Occaisionally, of course). In this tutorial, we'll walk through developing a Streamlit application that generates synthetic data using the Cerebras API.
 
+![finished product](./syntheticData.png)
+
 ### Step 1: Set up your API Key
 
 1. **Obtain Your API Key**: Log in to your Cerebras account, navigate to the “API Keys” section, and generate a new API key.
