@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 from cerebras.cloud.sdk import Cerebras
 import json
+import webbrowser
+
+repl_link = ""
 
 # Initialize Cerebras client
 @st.cache_resource
@@ -12,6 +15,8 @@ st.title("Synthetic Data Generator using Cerebras")
 
 # Sidebar for API key input
 with st.sidebar:
+    if st.button('Spin up your own on Repl.it :material/code:', type='secondary'):
+        webbrowser.open(repl_link)
     st.title("Settings")
     api_key = st.text_input("Enter your Cerebras API Key:", type="password")
 

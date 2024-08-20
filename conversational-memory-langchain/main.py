@@ -62,20 +62,9 @@ def main():
     
     st.title("HyperthymesiaBot")
 
-    st.markdown("""
-    <style>.element-container:has(#button-after) + div button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;     
-        }</style>""", unsafe_allow_html=True)
-    
-    # Button with custom CSS class
-    st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
-    if st.button('Spin up your own on Repl.it :material/code:', type='primary'):
-        webbrowser.open(repl_link)
-
     with st.sidebar:
+        if st.button('Spin up your own on Repl.it :material/code:', type='secondary'):
+            webbrowser.open(repl_link)
         st.title("Settings")
         st.markdown("### :red[Enter your Cerebras API Key below]")
         api_key = st.text_input("Cerebras API Key:", type="password")
