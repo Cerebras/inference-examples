@@ -14,6 +14,7 @@ from langchain_core.language_models.llms import LLM
 import streamlit as st
 import weaviate
 from langchain_weaviate import WeaviateVectorStore
+import webbrowser
 
 class CerebrasLLM(LLM):
     """A custom LLM implementation for the Cerebras API."""
@@ -67,21 +68,10 @@ repl_link = "https://replit.com/@EmilyChen42/RAG-with-Weaviate#main.py"
 st.set_page_config(page_icon="🤖", layout="wide", page_title="Cerebras")
 st.subheader("PDF Q&A with Weaviate 📄", divider="orange", anchor=False)
 
-st.markdown("""
-<style>.element-container:has(#button-after) + div button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;     
-    }</style>""", unsafe_allow_html=True)
-
-# Button with custom CSS class
-st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
-if st.button('Spin up your own on Repl.it :material/code:', type='primary'):
-    webbrowser.open(repl_link)
-
 # Load secrets
 with st.sidebar:
+    if st.button('Spin up your own on Repl.it :material/code:', type='secondary'):
+        webbrowser.open(repl_link)
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     CEREBRAS_API_KEY = st.text_input("Cerebras API Key:", type="password")

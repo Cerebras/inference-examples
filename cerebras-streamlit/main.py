@@ -4,23 +4,8 @@ import webbrowser
 
 repl_link = "https://replit.com/@EmilyChen10/AI-Agentic-Workflow-Example-with-LlamaIndex-V2#main.py"
 
-# Repl Button
-st.markdown("""
-<style>.element-container:has(#button-after) + div button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;     
-    }</style>""", unsafe_allow_html=True)
-
-# Button with custom CSS class
-st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
-if st.button('Spin up your own on Repl.it :material/code:', type='primary'):
-    webbrowser.open(repl_link)
-
 st.set_page_config(page_icon="🤖", layout="wide",
-       page_title="CerebrasLite")
-
+       page_title="Cerebras")
 
 def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
@@ -29,12 +14,13 @@ def icon(emoji: str):
         unsafe_allow_html=True,
     )
 
-
 icon("🧠")
-st.title("CerebrasLite")
+st.title("Cerebras")
 st.subheader("Deploying Cerebras on Streamlit", divider="orange", anchor=False)
 
 with st.sidebar:
+    if st.button('Spin up your own on Repl.it :material/code:', type='secondary'):
+        webbrowser.open(repl_link)
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")

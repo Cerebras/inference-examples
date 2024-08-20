@@ -10,12 +10,11 @@ This tutorial outlines the setup, code structure, and how conversational memory 
 
 2. **Set the API Key in the Sidebar**: Simply grab your Cerebras API key and stick it in the textbox in the sidebar.
 
-### Step 2: Install the Cerebras Inference Library
+### Step 2: Install dependencies
 
-You need to install the Cerebras Inference library to interact with the API by using repl's built in `Shell`. Use the following command to install the library:
-
+Let's make sure we have all of the requirements for this project installed!
 ```bash
-pip install https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/test/cerebras_cloud_sdk-0.5.0-py3-none-any.whl
+pip install -r requirements.txt
 ```
 
 Go ahead and also run `pip install -r requirements.txt` to install other requirements as well!

@@ -6,18 +6,13 @@ Streamlit is a simple way to deploy machine learning and other data science appl
 
 1. **Obtain Your API Key**: Log in to your Cerebras account, navigate to the “API Keys” section, and generate a new API key.
 
-2. **Set the API Key as an Environment Variable**: For security, store your API key as a secret in your repl! Here's [more information](https://docs.replit.com/replit-workspace/workspace-features/secrets) on how to do that.
+2. **Set the API Key in the Sidebar**: Once you have the Cerebras API key, add it to the sidebar on the left.
 
-![setting a secret](https://gist.github.com/user-attachments/assets/25a2741e-859f-4ba3-a105-a78435e89fb4.png)
+### Step 2: Install dependencies
 
-   This ensures that your API key is available to your script without hardcoding it directly.
-
-### Step 2: Install the Cerebras Inference Library
-
-You need to install the Cerebras Inference library to interact with the API by using repl's built in `Shell`. Use the following command to install the library:
-
+Let's make sure we have all of the requirements for this project installed!
 ```bash
-pip install https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/test/cerebras_cloud_sdk-0.5.0-py3-none-any.whl
+pip install -r requirements.txt
 ```
 
 Go ahead and also run `pip install -r requirements.txt` to install other requirements as well!
@@ -25,41 +20,13 @@ Go ahead and also run `pip install -r requirements.txt` to install other require
 ### Step 3: Streamline your Streamlit Experience 
 Press RUN and then run the command `streamlit run main.py` in Shell to interact with the UI.
 
-Certainly! Let’s break down the provided code into sections and explain how each part showcases a feature of Streamlit. We will also include a section at the end detailing how to deploy a Streamlit app.
-
----
-
 ### Code Overview
-
-#### **Custom Button**
-
-```python
-import streamlit as st
-from cerebras.cloud.sdk import Cerebras
-import webbrowser
-
-# Repl Button
-st.markdown("""
-<style>.element-container:has(#button-after) + div button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;     
-    }</style>""", unsafe_allow_html=True)
-
-# Button with custom CSS class
-st.markdown('<span id="button-after"></span>', unsafe_allow_html=True)
-if st.button('Spin up your own on Repl.it :material/code:', type='primary'):
-    webbrowser.open(repl_link)
-```
-- `st.markdown`: Used to add markdown text to the webpage. In this case, it is used to create custom CSS components and styling to generate a button that floats on the bottom right corner of the screen.
-- `st.button`: Creates a button, in this case, to open a link.
 
 #### **Page Configuration and Icon**
 
 ```python
 st.set_page_config(page_icon="🤖", layout="wide",
-       page_title="CerebrasLite")
+       page_title="Cerebras")
 
 def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
@@ -69,7 +36,7 @@ def icon(emoji: str):
     )
 
 icon("🧠")
-st.title("CerebrasLite")
+st.title("Cerebras")
 st.subheader("Deploying Cerebras on Streamlit", divider="orange", anchor=False)
 ```
 
@@ -81,6 +48,8 @@ st.subheader("Deploying Cerebras on Streamlit", divider="orange", anchor=False)
 
 ```python
 with st.sidebar:
+    if st.button('Spin up your own on Repl.it :material/code:', type='secondary'):
+        webbrowser.open(repl_link)
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")
@@ -100,6 +69,7 @@ if not api_key:
 ```
 
 - `st.sidebar`: Creates a sidebar layout, which is useful for settings or inputs that are not part of the main content area.
+- `st.button`: Creates new button that links to an external web page.
 - `st.text_input`: Allows users to input their Cerebras API Key securely. The `type="password"` option hides the input text for security.
 - `st.markdown`: Displays instructions and a welcome message in Markdown format, providing user guidance on how to start using the app.
 - `st.stop()`: Stops further execution if the API key is not provided, ensuring that the app does not run without necessary credentials.

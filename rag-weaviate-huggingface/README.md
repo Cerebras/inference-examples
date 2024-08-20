@@ -10,12 +10,10 @@ Creating a system to answer questions based on PDF content involves integrating 
 
 2. **Set the API Keys in the Sidebar**: Once you have both Cerebras and Weaviate API Keys and URL, add them to the sidebar on the left.
 
-### Step 2: Install the Cerebras Inference Library
+### Step 2: Install dependencies
 
-You need to install the Cerebras Inference library to interact with the API. Use the following command to install the library along with other dependencies:
-
+Let's make sure we have all of the requirements for this project installed!
 ```bash
-pip install https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/test/cerebras_cloud_sdk-0.5.0-py3-none-any.whl
 pip install -r requirements.txt
 ```
 
