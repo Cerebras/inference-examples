@@ -2,7 +2,7 @@
 
 This tutorial outlines how to build a three-agent workflow (researcher, editor, and writer) that produces a blog utilizing LangChain, LangGraph, and the Cererbras API.
 
-<!-- ![finished product](./alienMath.png) -->
+![finished product](./multiAgent.png)
 
 ### Step 1: Set up your API Keys
 
@@ -98,41 +98,66 @@ class State(TypedDict):
 
 **Research Agent**
 
-The `ResearchAgent` is responsible for optimizing the search query and retrieving relevant results.
+The `ResearchAgent` is responsible for optimizing the search query and retrieving relevant results. This agent first calls `format_search` to generate a Tavily search prompt, and then passes to `search` to generate research.
 
 ```python
 class ResearchAgent:
     def format_search(self, query: str) -> str:
-        prompt = (
-            "You are an expert at optimizing search queries for Google. "
-            "Your task is to take a given query and return an optimized version of it, making it more likely to yield relevant results. "
-            "Do not include any explanations or extra text, only the optimized query.\n\n"
-            "Example:\n"
-            "Original: best laptop 2023 for programming\n"
-            "Optimized: top laptops 2023 for coding\n\n"
-            "Now optimize the following query:\n"
-            f"Original: {query}\n"
-            "Optimized:"
-        )
+        # Define prompt for research
         
         response = llm.invoke(prompt)  
         return response.content
     
     def search(self, state: State):
-        search = TavilySearchResults(max_results=1)
-        start_time = time.perf_counter()
-        optimized_query = self.format_search(state.get('query', "")[-1].content)
-        end_time = time.perf_counter()
-        results = search.invoke(optimized_query)
-        state["optimized_query"] = optimized_query
-        final_result.append({"subheader": f"Research Iteration", "content": [results[0]["content"]], "time": end_time - start_time})
-        return {"research": [results[0]["content"]]}
+        # Use Tavily to search the internet for results
+        # Use format_search to generate and optimize search queries
+```
+
+As shown below, the `format_search` function utilizes the LLM powered by Cerebras to create optimized search prompts for Tavily.
+```python
+def format_search(self, query: str) -> str:
+    prompt = (
+        "You are an expert at optimizing search queries for Google. "
+        "Your task is to take a given query and return an optimized version of it, making it more likely to yield relevant results. "
+        "Do not include any explanations or extra text, only the optimized query.\n\n"
+        "Example:\n"
+        "Original: best laptop 2023 for programming\n"
+        "Optimized: top laptops 2023 for coding\n\n"
+        "Example:\n"
+        "Original: how to train a puppy not to bite\n"
+        "Optimized: puppy training tips to prevent biting\n\n"
+        "Now optimize the following query:\n"
+        f"Original: {query}\n"
+        "Optimized:"
+    )
+    
+    response = llm.invoke(prompt)  
+    return response.content
+```
+
+The `search` function calls `format_search` to return research results, which are then sent to the `EditorAgent` for evaluation. The object that is returned from this function is updated in the `State` function.
+```python
+def search(self, state: State):
+    search = TavilySearchResults(max_results=1)
+
+    start_time = time.perf_counter()
+    optimized_query = self.format_search(state.get('query', "")[-1].content)
+    end_time = time.perf_counter()
+
+    results = search.invoke(optimized_query)
+
+    state["optimized_query"] = optimized_query
+
+    final_result.append({"subheader": f"Research Iteration", "content": [results[0]["content"]], "time": end_time - start_time})
+
+    return {"research": [results[0]["content"]]}
 ```
 
 **Editor Agent**
 
 The `EditorAgent` evaluates the gathered research and decides whether the information is sufficient or needs further refinement.
 
+We start off by defining the function and retrieving the query and research from the `State` object; then, we calculate the current number of iterations.
 ```python
 class EditorAgent:
     def evaluate_research(self, state: State):
@@ -146,37 +171,42 @@ class EditorAgent:
         
         if iteration_count >= 3:
             return {"content_ready": True}
-        
-        prompt = (
-            "You are an expert editor. Your task is to evaluate the research based on the query. "
-            "If the information is sufficient to create a comprehensive and accurate blog post, respond with 'sufficient'. "
-            "If the information is not sufficient, respond with 'insufficient' and provide a new, creative query suggestion to improve the results. "
-            "Consider the depth, relevance, and completeness of the information when making your decision.\n\n"
-            "Now evaluate the following:\n"
-            f"Used queries: {query}\n"
-            f"Research: {research}\n\n"
-            "Evaluation (sufficient/insufficient):\n"
-            "New query (if insufficient):"
-        )
-        
-        start_time = time.perf_counter()
-        response = llm.invoke(prompt)
-        end_time = time.perf_counter()
+```
 
-        evaluation = response.content.strip()
-        final_result.append({"subheader": f"Editor Evaluation Iteration", "content": evaluation, "time": end_time - start_time})
+We then generate and send a prompt for the LLM to use when analyzing the research returned from the `ResearchAgent`:
+```python
+prompt = (
+    "You are an expert editor. Your task is to evaluate the research based on the query. "
+    "If the information is sufficient to create a comprehensive and accurate blog post, respond with 'sufficient'. "
+    "If the information is not sufficient, respond with 'insufficient' and provide a new, creative query suggestion to improve the results. "
+    "If the research results appear repetitive or not diverse enough, think about a very different kind of question that could yield more varied and relevant information. "
+    "Consider the depth, relevance, and completeness of the information when making your decision.\n\n"
+    # ...
+    # Provide examples of "used queries," "research," "evaluation," and a new query based on that information
+)
 
-        if "new query:" in evaluation.lower():
-            new_query = evaluation.split("New query:", 1)[-1].strip()
-            return {"query": [new_query], "iteration_count": iteration_count + 1, "evaluation": evaluation}
-        else:
-            return {"content_ready": True, "evaluation": evaluation}
+start_time = time.perf_counter()
+response = llm.invoke(prompt)
+end_time = time.perf_counter()
+
+evaluation = response.content.strip()
+final_result.append({"subheader": f"Editor Evaluation Iteration", "content": evaluation, "time": end_time - start_time})
+```
+
+If the `EditorAgent` determines that the research output is insufficient, it will return a new query. Otherwise, it will set the `content_ready` attribute to `True`.
+```python
+if "new query:" in evaluation.lower():
+    new_query = evaluation.split("New query:", 1)[-1].strip()
+    return {"query": [new_query], "iteration_count": iteration_count + 1, "evaluation": evaluation}
+else:
+    return {"content_ready": True, "evaluation": evaluation}
 ```
 
 **Writer Agent**
 
 The `WriterAgent` writes the final blog post based on the user's query and approved research results by the editor.
 
+This agent is quite straightforward in that it simply retrieves the `reserch` value from the `State` object and utilizes it to write the blog once the content is approved by the `EditorAgent`.
 ```python
 class WriterAgent:
     def write_blogpost(self, state: State):
@@ -192,12 +222,28 @@ class WriterAgent:
         )
 
         response  = llm.invoke(prompt)
+
         return {"content": response.content}
 ```
 
 ### Setting Up the StateGraph
 
-The `StateGraph` orchestrates the interactions between agents, defining how data flows and how decisions are made. As you can see in the code below, the `accept` and `revise` values from the `content_ready` state dictate whether to continue to the writing stage.
+The `StateGraph` is a class that represents the graph. It orchestrates the interactions between agents, defining how data flows and how decisions are made. As you can see in the code below, the `accept` and `revise` values from the `content_ready` state dictate whether to continue to the writing stage.
+
+If you can recall the `State` class that we defined earlier, we're now passing it in as central state object that will be updated over time.
+
+![flowchart](./flowchart-highlighted.png)
+
+Let's bring back the diagram from earlier to further illustrate this process. Each `node` in the graph is visualized in yellow, and the conditional edges are colored in red.
+
+#### Nodes
+Nodes are defined by a custom name as the first parameter in `add_node` and the function, in this case, agent, that will be run.
+
+#### Edges
+There are three different types of edges that are incorporated in our graph below:
+* **Start**: This edge connects the start of a graph to a node.
+* **Normal**: Edges where one node is called right after another.
+* **Conditional**: This edge is used when a function/agent is used to determine which node to go to next.
 
 ```python
 graph = StateGraph(State)
