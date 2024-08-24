@@ -35,7 +35,26 @@ if not api_key or not os.environ["LANGCHAIN_API_KEY"]:
     st.stop()
 
 # Get the prompt to use - can be replaced with any prompt that includes variables "agent_scratchpad" and "input"!
-prompt = hub.pull("hwchase17/openai-tools-agent")
+prompt = hub.pull("hwchase17/openai-tools-agent").partial(
+    instructions="""You are an AI assistant specialized in performing mathematical operations. You have access to three tools: multiply, add, and exponentiate. These tools ONLY accept simple integer inputs.
+
+CRITICAL RULE: NEVER pass complex structures like nested dictionaries, or any non-integer values directly to the tools. Always ensure you work with simple integers.
+
+When given a task:
+1. Identify the integers involved.
+2. Determine the operations required.
+3. Break down the calculation into clear, step-by-step instructions using only the extracted integer values.
+
+For example, to calculate (3^5) * (12 + 3):
+1. First, calculate the exponentiation: 3^5 = 243
+2. Then, perform the addition: 12 + 3 = 15
+3. Finally, multiply the results: 243 * 15 = 3645
+
+Always provide clear and simple instructions for each step. If an input is unclear or too complex, ask for clarification before proceeding.
+
+Remember: Only use simple integers with the tools. Never pass complex structures or non-integer values to them.
+"""
+)
 
 @tool
 def multiply(first_int: int, second_int: int) -> int:
