@@ -50,8 +50,8 @@ class State(TypedDict):
     iteration_count: int
     # Counter for iterations
 
-# Initialize ChatOpenAI instance for language model
-llm = ChatCerebras(api_key=api_key, model="gpt-3.5-turbo")
+# Initialize ChatCerebras instance for language model
+llm = ChatCerebras(api_key=api_key, model="llama3.1-70b")
 
 class ResearchAgent:
     def format_search(self, query: str) -> str:
