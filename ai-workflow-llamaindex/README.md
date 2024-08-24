@@ -72,7 +72,7 @@ We then initialize the agent and LLM in order to be able to start the workflow.
 ```python
 if st.button("Generate output"):
     if user:
-        llm = Groq(model="llama3-70b-8192", api_key=api_key)
+        llm = Cerebras(model="llama3.1-70b", api_key=api_key)
         agent = ReActAgent.from_tools([poof_tool, shoop_tool], llm=llm, verbose=True, max_iterations=100)
 ```
 - `Cerebras` will allow us to interact with an LLM to generate the output given the provided tooling.

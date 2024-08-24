@@ -24,22 +24,7 @@ Run the command `streamlit run main.py` to start up the frontend.
 ### **Code Structure**
 Our code has four major components to make this system work.
 
-1. **Custom LLM Implementation**
-    LangChain currently doesn't have a Cerebras method, but we can create our own using this [handy tutorial](https://python.langchain.com/v0.1/docs/modules/model_io/llms/custom_llm/).
-
-    **CerebrasLLM Class**: This class enables the implementation of Cerebras's LLM with LangChain. It can be called like so: `CerebrasLLM(api_key=api_key, model_name=model_name)`
-
-    ```python
-    class CerebrasLLM(LLM):
-    """A custom LLM implementation for the Cerebras API."""
-
-        api_key: str
-        model_name: str
-
-        # Class continues
-    ```
-
-2. **Embeddings and Vector Storage**
+1. **Embeddings and Vector Storage**
 
     Embeddings are generated using LangChain's `SentenceTransformerEmbeddings`; the `upload_vectors` function uploads text chunks to Weaviate after converting them into vectors.
 
@@ -62,7 +47,7 @@ Our code has four major components to make this system work.
         progress_bar.progress((i + 1) / len(texts), "Indexing PDF content... (this may take a bit) 🦙")
     ```
 
-4. **Generating a Response**
+2. **Generating a Response**
 
     Using the user's prompt and similar text chunks based on their search query, generate an answer.
 
@@ -71,7 +56,7 @@ Our code has four major components to make this system work.
     docs = st.session_state.docsearch.similarity_search(prompt)
 
     # Load the question answering chain
-    llm = CerebrasLLM(api_key=CEREBRAS_API_KEY, model_name="llama3.1-8b")
+    llm = ChatCerebras(api_key=CEREBRAS_API_KEY, model="llama3.1-8b")
     chain = load_qa_chain(llm, chain_type="stuff")
 
     # Query the documents and get the answer
@@ -138,7 +123,7 @@ docs = st.session_state.docsearch.similarity_search(prompt)
 from langchain.chains.question_answering import load_qa_chain
 
 # Load question answering chain
-llm = CerebrasLLM(api_key=CEREBRAS_API_KEY, model_name="llama3.1-8b")
+llm = ChatCerebras(api_key=CEREBRAS_API_KEY, model="llama3.1-8b")
 chain = load_qa_chain(llm, chain_type="stuff")
 
 # Generate answer

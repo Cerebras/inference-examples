@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from langchain import hub
 from langchain.agents import AgentExecutor, create_tool_calling_agent
-from langchain_openai import ChatOpenAI
+from langchain_cerebras import ChatCerebras
 from langchain_core.tools import tool
 
 # Add tracing in LangSmith
@@ -59,7 +59,7 @@ st.info("ex: Take 3 to the fifth power and multiply that by the sum of twelve an
 
 if st.button("Generate output"):
     if user:
-        llm = ChatOpenAI(model="gpt-3.5-turbo-0125", api_key=api_key)
+        llm = ChatCerebras(model="llama3.1-70b", api_key=api_key)
 
         # Construct the tool calling agent
         agent = create_tool_calling_agent(llm, tools, prompt)

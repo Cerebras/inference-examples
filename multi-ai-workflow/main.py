@@ -7,7 +7,7 @@ from typing_extensions import TypedDict
 from typing import Annotated
 from langgraph.graph import END
 from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_openai import ChatOpenAI
+from langchain_cerebras import ChatCerebras
 
 # Add tracing in LangSmith
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -50,8 +50,8 @@ class State(TypedDict):
     iteration_count: int
     # Counter for iterations
 
-# Initialize ChatOpenAI instance for language model
-llm = ChatOpenAI(api_key=api_key, model="gpt-3.5-turbo", temperature=0)
+# Initialize ChatCerebras instance for language model
+llm = ChatCerebras(api_key=api_key, model="llama3.1-70b")
 
 class ResearchAgent:
     def format_search(self, query: str) -> str:

@@ -73,7 +73,9 @@ st.info("ex: Take 3 to the fifth power and multiply that by the sum of twelve an
 We then initialize the LLM that will be constructing the final response.
 
 ```python
-llm = ChatOpenAI(model="gpt-3.5-turbo-0125", api_key=api_key)
+from langchain_cerebras import ChatCerebras
+
+llm = ChatCerebras(model="llama3.1-70b", api_key=api_key)
 ```
 
 Passing in the LLM, tools, and the user's prompt, we can initialize an agent that can be used as a LangChain Runnable object that we will use to start the workflow.

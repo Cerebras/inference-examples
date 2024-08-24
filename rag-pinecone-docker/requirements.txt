@@ -1,5 +1,6 @@
 langchain==0.1.16
 langchain-core
+https://cerebras-cloud-sdk.s3.amazonaws.com/production/langchain_cerebras-0.1.0-py3-none-any.whl
 langchain-community
 streamlit
 pinecone-client

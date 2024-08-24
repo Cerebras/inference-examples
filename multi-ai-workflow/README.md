@@ -43,7 +43,7 @@ from typing_extensions import TypedDict
 from typing import Annotated
 from langgraph.graph import END
 from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_openai import ChatOpenAI
+from langchain_cerebras import ChatCerebras
 
 # Add tracing in LangSmith
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -83,7 +83,7 @@ if not api_key or not os.environ.get("TAVILY_API_KEY") or not os.environ.get("LA
 
 We define the state and agents in our system using classes. The state represents the current stage and data in the workflow, while the agents perform specific tasks.
 
-**State Definition**
+**State Definitio and LLM Initialization**
 
 ```python
 class State(TypedDict):
@@ -92,6 +92,9 @@ class State(TypedDict):
     content: str
     content_ready: bool
     iteration_count: int
+
+# Initialize ChatCerebras instance for language model
+llm = ChatCerebras(api_key=api_key, model="llama3.1-70b")
 ```
 
 **Research Agent**

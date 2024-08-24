@@ -1,6 +1,6 @@
 import streamlit as st
 from llama_index.core.agent import ReActAgent
-from llama_index.llms.groq import Groq
+from llama_index.llms.cerebras import Cerebras
 from llama_index.core.tools import FunctionTool
 import io
 import contextlib
@@ -52,7 +52,7 @@ st.info("ex: What is 2 shoop 3 poof 1 shoop 4?")
 
 if st.button("Generate output"):
     if user:
-        llm = Groq(model="llama3-70b-8192", api_key=api_key)
+        llm = Cerebras(model="llama3.1-70b", api_key=api_key)
         agent = ReActAgent.from_tools([poof_tool, shoop_tool], llm=llm, verbose=True, max_iterations=100)
 
         # Capture the verbose output in a StringIO buffer

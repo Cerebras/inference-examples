@@ -1,6 +1,5 @@
 import streamlit as st
 import webbrowser
-
 from langchain.chains import LLMChain
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -9,49 +8,7 @@ from langchain_core.prompts import (
 )
 from langchain_core.messages import SystemMessage
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
-
-# Importing dependencies for custom LLM implementation
-from cerebras.cloud.sdk import Cerebras
-from typing import Any, List, Optional
-from langchain_core.callbacks.manager import CallbackManagerForLLMRun
-from langchain_core.language_models.llms import LLM
-
-class CerebrasLLM(LLM):
-    """A custom LLM implementation for the Cerebras API."""
-
-    api_key: str
-    model_name: str
-
-    def _call(
-        self,
-        prompt: str,
-        stop: Optional[List[str]] = None,
-        run_manager: Optional[CallbackManagerForLLMRun] = None,
-        **kwargs: Any,
-    ) -> str:
-        if stop is not None:
-            raise ValueError("stop kwargs are not permitted.")
-
-        # Create a completion request to the Cerebras API
-        user_message = {"role": "user", "content": prompt}
-        response = Cerebras(api_key=self.api_key).chat.completions.create(
-            messages=[user_message],
-            model=self.model_name,
-            **kwargs
-        )
-
-        # Calculate tokens per second
-        total_tokens = response.usage.total_tokens
-        total_time = response.time_info.total_time
-        tokens_per_second = total_tokens / total_time
-
-        # Extract and return the text from the response along with metric
-        return response.choices[0].message.content + f"\n(Tokens per second: {tokens_per_second:.2f})"
-
-    @property
-    def _llm_type(self) -> str:
-        """Get the type of language model used by this chat model. Used for logging purposes only."""
-        return "cerebras"
+from langchain_cerebras import ChatCerebras
 
 def main():
     """
@@ -111,7 +68,7 @@ def main():
         st.session_state.selected_model = model_option
 
     # Initialize the Cerebras LLM object
-    cerebras_llm = CerebrasLLM(api_key=api_key, model_name=st.session_state.selected_model)
+    cerebras_llm = ChatCerebras(api_key=api_key, model=st.session_state.selected_model)
 
     user_input = st.text_input("Let's talk:", "")
 
