@@ -11,7 +11,7 @@ import contextlib
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
 # Start of Streamlit Application
-st.title("A Well-Read LLM 🤓")
+st.title("A Daily Dose of LLM 📰")
 
 # Load secrets
 with st.sidebar:
@@ -25,7 +25,7 @@ if not api_key or not os.environ["LANGCHAIN_API_KEY"]:
     st.markdown("""
     ## Welcome to Cerebras x LangChain Agentic Workflow Demo!
 
-    Needed a summary of today's news? You probably headed to Google to search, not your average LLM. This bot is different, however - it can search the internet *for you*! This app implements LangChain's tool-calling agent to interact with Cerebras API. 
+    Needed a summary of today's news? You probably headed to Google to search, not your average LLM. This bot is different, however, it can search the internet *for you*! This app implements LangChain's tool-calling agent to interact with Cerebras API. 
                 
     To get started:
     1. :red[Enter your Cerebras and LangChain API Keys in the sidebar.]
@@ -45,7 +45,7 @@ if st.button("Generate output"):
         # Initialize llm
         llm = ChatCerebras(model="llama3.1-70b", api_key=api_key)
         # Load tools
-        tools = load_tools(["ddg-search", "llm-math", "wikipedia"], llm=llm)
+        tools = load_tools(["ddg-search", "wikipedia"], llm=llm)
 
         agent = initialize_agent(tools,
                                 llm,
@@ -67,12 +67,10 @@ if st.button("Generate output"):
         ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
         verbose_output = ansi_escape.sub('', verbose_output)
 
-                # Format the verbose output into HTML
+        # Format the verbose output into HTML
         formatted_output = ""
         lines = verbose_output.splitlines()
         for line in lines:
-            # if line.startswith("> Running step"):
-            #     formatted_output += f"<div style='margin-bottom: 15px;'><p><b>{line}</b></p>"
             if "Thought:" in line:
                 formatted_output += f"<div style='background-color: #f8f9fa; padding: 10px; border-radius: 5px;'><b>Thought:</b> {line.replace('Thought:', '').strip()}</div>"
             elif "Action:" in line:
