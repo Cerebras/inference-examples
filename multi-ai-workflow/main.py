@@ -6,8 +6,8 @@ from langgraph.graph.message import add_messages
 from typing_extensions import TypedDict
 from typing import Annotated
 from langgraph.graph import END
-from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_cerebras import ChatCerebras
+from langchain_community.tools import DuckDuckGoSearchRun
 
 # Add tracing in LangSmith
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -22,19 +22,17 @@ with st.sidebar:
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")
-    st.markdown("### :red[Enter your Tavily API Key below]")
-    os.environ["TAVILY_API_KEY"] = st.text_input("Tavily API Key:", type="password")
     st.markdown("### :red[Enter your LangChain API Key below]")
     os.environ["LANGCHAIN_API_KEY"] = st.text_input("LangChain API Key:", type="password")
 
-if not api_key or not os.environ.get("TAVILY_API_KEY") or not os.environ.get("LANGCHAIN_API_KEY"):
+if not api_key or not os.environ.get("LANGCHAIN_API_KEY"):
     st.markdown("""
     ## Welcome to Cerebras x LangChain & LangGraph Agentic Workflow Demo!
 
     A researcher, editor, and writer walk into a bar. Except, this bar is an agentic workflow. This demo showcases a multi-agent workflow for generating a blog post based on a query.
 
     To get started:
-    1. :red[Enter your Cerebras and Tavily API Keys in the sidebar.]
+    1. :red[Enter your Cerebras and LangChain API Keys in the sidebar.]
     2. Ask the bot to write a blog about a topic.
     3. The bot will search for information, evaluate it, and write a blog post.
 
@@ -74,7 +72,7 @@ class ResearchAgent:
         return response.content
     
     def search(self, state: State):
-        search = TavilySearchResults(max_results=1)
+        search = DuckDuckGoSearchRun()
 
         start_time = time.perf_counter()
         optimized_query = self.format_search(state.get('query', "")[-1].content)
@@ -84,9 +82,9 @@ class ResearchAgent:
 
         state["optimized_query"] = optimized_query
 
-        final_result.append({"subheader": f"Research Iteration", "content": [results[0]["content"]], "time": end_time - start_time})
-
-        return {"research": [results[0]["content"]]}
+        final_result.append({"subheader": f"Research Iteration", "content": [results], "time": end_time - start_time})
+        print(results)
+        return {"research": results}
     
 class EditorAgent:
     def evaluate_research(self, state: State):

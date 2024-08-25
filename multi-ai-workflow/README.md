@@ -8,10 +8,9 @@ This tutorial outlines how to build a three-agent workflow (researcher, editor, 
 
 1. **Obtain Your API Keys**:
 * Log in to your Cerebras account, navigate to the “API Keys” section, and generate a new API key.
-* Do the same with the [Tavily API](https://app.tavily.com/home).
-* Finally, log in to your [LangChain account](https://smith.langchain.com) and click on the settings cog in the bottom left corner to generate a new API key.
+* Log in to your [LangChain account](https://smith.langchain.com) and click on the settings cog in the bottom left corner to generate a new API key.
 
-2. **Set the API Keys in the Sidebar**: Once you have the Cerebras, Tavily, & LangChain API keys, add them to the sidebar on the left.
+2. **Set the API Keys in the Sidebar**: Once you have the Cerebras & LangChain API keys, add them to the sidebar on the left.
 
 ### Step 2: Install dependencies
 
@@ -25,7 +24,7 @@ pip install -r requirements.txt
 Run the command `streamlit run main.py` to start up the frontend.
 
 ### Code Overview
-What does a multi-agent workflow look like? In our case, our blog-writing team will consist of three agents: the `search_agent` (Researcher), `editor_agent` (Editor), and `writer_agent` (Writer). The researcher utilizes the Tavily API to gather search results from the internet, which are then accepted or sent back for revision by the editor. Finally, the approved research results are sent to the writer to complete the blog.
+What does a multi-agent workflow look like? In our case, our blog-writing team will consist of three agents: the `search_agent` (Researcher), `editor_agent` (Editor), and `writer_agent` (Writer). The researcher utilizes the DuckDuckGo API to gather search results from the internet, which are then accepted or sent back for revision by the editor. Finally, the approved research results are sent to the writer to complete the blog.
 
 ![flowchart](./flowchart-diagram.png)
 
@@ -42,8 +41,8 @@ from langgraph.graph.message import add_messages
 from typing_extensions import TypedDict
 from typing import Annotated
 from langgraph.graph import END
-from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_cerebras import ChatCerebras
+from langchain_community.tools import DuckDuckGoSearchRun
 
 # Add tracing in LangSmith
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -58,19 +57,17 @@ with st.sidebar:
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")
-    st.markdown("### :red[Enter your Tavily API Key below]")
-    os.environ["TAVILY_API_KEY"] = st.text_input("Tavily API Key:", type="password")
     st.markdown("### :red[Enter your LangChain API Key below]")
     os.environ["LANGCHAIN_API_KEY"] = st.text_input("LangChain API Key:", type="password")
 
-if not api_key or not os.environ.get("TAVILY_API_KEY") or not os.environ.get("LANGCHAIN_API_KEY"):
+if not api_key or not os.environ.get("LANGCHAIN_API_KEY"):
     st.markdown("""
     ## Welcome to Cerebras x LangChain & LangGraph Agentic Workflow Demo!
 
     A researcher, editor, and writer walk into a bar. Except, this bar is an agentic workflow. This demo showcases a multi-agent workflow for generating a blog post based on a query.
 
     To get started:
-    1. :red[Enter your Cerebras and Tavily API Keys in the sidebar.]
+    1. :red[Enter your Cerebras and LangChain API Keys in the sidebar.]
     2. Ask the bot to write a blog about a topic.
     3. The bot will search for information, evaluate it, and write a blog post.
 
@@ -83,7 +80,7 @@ if not api_key or not os.environ.get("TAVILY_API_KEY") or not os.environ.get("LA
 
 We define the state and agents in our system using classes. The state represents the current stage and data in the workflow, while the agents perform specific tasks.
 
-**State Definitio and LLM Initialization**
+**State Definition and LLM Initialization**
 
 ```python
 class State(TypedDict):
@@ -99,7 +96,7 @@ llm = ChatCerebras(api_key=api_key, model="llama3.1-70b")
 
 **Research Agent**
 
-The `ResearchAgent` is responsible for optimizing the search query and retrieving relevant results. This agent first calls `format_search` to generate a Tavily search prompt, and then passes to `search` to generate research.
+The `ResearchAgent` is responsible for optimizing the search query and retrieving relevant results. This agent first calls `format_search` to generate a DuckDuckGo search prompt, and then passes to `search` to generate research.
 
 ```python
 class ResearchAgent:
@@ -110,11 +107,11 @@ class ResearchAgent:
         return response.content
     
     def search(self, state: State):
-        # Use Tavily to search the internet for results
+        # Use DuckDuckGo to search the internet for results
         # Use format_search to generate and optimize search queries
 ```
 
-As shown below, the `format_search` function utilizes the LLM powered by Cerebras to create optimized search prompts for Tavily.
+As shown below, the `format_search` function utilizes the LLM powered by Cerebras to create optimized search prompts for DuckDuckGo.
 ```python
 def format_search(self, query: str) -> str:
     prompt = (
@@ -139,7 +136,7 @@ def format_search(self, query: str) -> str:
 The `search` function calls `format_search` to return research results, which are then sent to the `EditorAgent` for evaluation. The object that is returned from this function is updated in the `State` function.
 ```python
 def search(self, state: State):
-    search = TavilySearchResults(max_results=1)
+    search = DuckDuckGoSearchRun()
 
     start_time = time.perf_counter()
     optimized_query = self.format_search(state.get('query', "")[-1].content)
@@ -149,9 +146,9 @@ def search(self, state: State):
 
     state["optimized_query"] = optimized_query
 
-    final_result.append({"subheader": f"Research Iteration", "content": [results[0]["content"]], "time": end_time - start_time})
-
-    return {"research": [results[0]["content"]]}
+    final_result.append({"subheader": f"Research Iteration", "content": [results], "time": end_time - start_time})
+    print(results)
+    return {"research": results}
 ```
 
 **Editor Agent**
