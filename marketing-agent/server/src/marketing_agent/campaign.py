@@ -266,6 +266,9 @@ class Campaign:
         Raises an exception if the reasoning engine fails to return a response.
         """
 
+        class Response(BaseModel):
+            markets: list[Market]
+
         self.feed.put_nowait(
             (
                 StatusMessageType.STATUS,
@@ -277,7 +280,7 @@ class Campaign:
         )
 
         response = await self.search_llm.query_object(
-            Market,
+            Response,
             VALUE_PROPOSITION=angle.value_proposition,
             USAGE_MODEL=angle.usage,
             TASK=(
@@ -286,7 +289,7 @@ class Campaign:
             ),
         )
 
-        return [response]
+        return response.markets
 
     async def generate_audience_analysis(self, angle: ProductAngle) -> list[Audience]:
         """
@@ -302,6 +305,8 @@ class Campaign:
         """
 
         # Identify candidate audiences for the value proposition
+        class Response(BaseModel):
+            audiences: list[AudienceUnion]
 
         self.feed.put_nowait(
             (
@@ -314,7 +319,7 @@ class Campaign:
         )
 
         response = await self.reasoning_llm.query_object(
-            AudienceUnion,
+            Response,
             PROBLEM_STATEMENT=angle.problem_addressed,
             USAGE=angle.usage,
             TASK=(
@@ -323,7 +328,7 @@ class Campaign:
             ),
         )
 
-        return [response.audience.normalize()]
+        return [audience.audience.normalize() for audience in response.audiences]
 
     async def create_copy_for_angle(
         self,
@@ -383,8 +388,8 @@ class Campaign:
         """
 
         # Get candidate angles for the product description
-        # class Response(BaseModel):
-        #     candidates: list[ProductAngle]
+        class Response(BaseModel):
+            candidates: list[ProductAngle]
 
         try:
             logger.info("Generating a marketing angle...")
@@ -395,14 +400,14 @@ class Campaign:
                 )
             )
             response = await self.reasoning_llm.query_object(
-                ProductAngle,
+                Response,
                 PRODUCT_DESCRIPTION=self.product_description,
-                TASK="List a suitable marketing angle given the PRODUCT_DESCRIPTION.",
+                TASK="List 3 suitable marketing angles given the PRODUCT_DESCRIPTION.",
             )
             self.feed.put_nowait(
                 (
                     StatusMessageType.STATUS,
-                    f"Generated marketing angle: {response.value_proposition}",
+                    f"Generated marketing angles: {', '.join([candidate.value_proposition for candidate in response.candidates])}",
                 )
             )
         except:
@@ -410,7 +415,7 @@ class Campaign:
             return
 
         # product_angles = response.candidates
-        product_angles = [response]
+        product_angles = response.candidates
 
         # Generate copy for each angle
         await asyncio.gather(

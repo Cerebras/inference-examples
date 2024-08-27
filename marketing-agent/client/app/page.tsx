@@ -27,6 +27,7 @@ export default function Home() {
   const [resources, setResources] = useState<any[]>([]);
   const [selectedResource, setSelectedResource] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [latestThought, setLatestThought] = useState<string | null>(null);
 
   const handleResourceClick = (resource: any) => {
     setSelectedResource(resource);
@@ -79,7 +80,6 @@ export default function Home() {
 
     socket.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      console.log(JSON.stringify(data));
 
       const parsedData = WebSocketMessageSchema.safeParse(data);
       if (!parsedData.success) {
@@ -113,7 +113,7 @@ export default function Home() {
 
   const updateThoughts = (message: WebSocketMessage) => {
     const data = (message as StatusUpdateMessage).data;
-    setThoughts((prevThoughts) => [...prevThoughts, data.message]);
+    setLatestThought(data.message);
   };
 
   const updateResources = (message: WebSocketMessage) => {
@@ -167,7 +167,7 @@ export default function Home() {
         {appStage !== "welcome" && (
           <div className={styles.generatingContainer}>
             <ThinkingPanel
-              thoughts={thoughts}
+              latestThought={latestThought}
               isLoading={appStage === "generating"}
             />
             <ResourcesPanel

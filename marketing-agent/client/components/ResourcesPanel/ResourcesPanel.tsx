@@ -16,6 +16,8 @@ export const getResourceIcon = (resourceType: Resource["resource_type"]) => {
       return "/linkedin.png";
     case "Email":
       return "/email.png";
+    case "BlogPost":
+      return "/blog.png";
     // Add more cases as needed
     default:
       return "/default.png";

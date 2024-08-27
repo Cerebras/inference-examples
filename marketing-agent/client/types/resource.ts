@@ -10,6 +10,11 @@ export interface LinkedInPostMetadata {
   mentions: string[];
   image_description: string;
 }
+export interface BlogPostMetadata {
+  title: string;
+  subtitle: string;
+  image_description: string;
+}
 
 export interface EmailMetadata {
   subject: string;
@@ -31,4 +36,8 @@ export type Resource =
   | (BaseResource & {
       resource_type: "Tweet";
       metadata: TweetMetadata;
+    })
+  | (BaseResource & {
+      resource_type: "BlogPost";
+      metadata: BlogPostMetadata;
     });
