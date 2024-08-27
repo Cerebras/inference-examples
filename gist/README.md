@@ -12,10 +12,10 @@ ReadAgent's workflow involves multiple prompts to the LLM at each step to create
 
 ## Project Structure
 
-`app.py`: Entry point of the application
-`gist.py`: Core logic of ReadAgent
-`arxiv_parser.py`: Handles processing of papers from Arxiv
-`streamlit_helper.py`: Handles UI rendering with Streamlit
+- `app.py`: Entry point of the application
+- `gist.py`: Core logic of ReadAgent
+- `arxiv_parser.py`: Handles processing of papers from Arxiv
+- `streamlit_helper.py`: Handles UI rendering with Streamlit
 
 ## Setup & Usage
 
@@ -26,4 +26,4 @@ ReadAgent's workflow involves multiple prompts to the LLM at each step to create
 
 ## References
 
-- Lee, Kuang-Huei, Chen, Xinyun, Furuta, Hiroki, Canny, John, and Fischer, Ian. "A Human-Inspired Reading Agent with Gist Memory of Very Long Contexts." *arXiv preprint arXiv:2402.09727*, 2024. [Link to paper](https://arxiv.org/abs/2402.09727)
+K.-H. Lee, X. Chen, H. Furuta, J. Canny, and I. Fischer, “A humaninspired reading agent with gist memory of very long contexts,” arXiv preprint arXiv:2402.09727, 2024.
