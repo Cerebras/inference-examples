@@ -19,10 +19,10 @@ ReadAgent's workflow involves multiple prompts to the LLM at each step to create
 
 ## Setup & Usage
 
-* Clone the repository
-* Install the requirements `pip install -r requirements.txt`
-* See the Cerebras SDK [QuickStart guide](https://inference-docs.cerebras.ai/quickstart) for configuring your API key
-* Run the app `streamlit run app.py`
+- Clone the repository
+- Install the requirements `pip install -r requirements.txt`
+- See the Cerebras SDK [QuickStart guide](https://inference-docs.cerebras.ai/quickstart) for configuring your API key
+- Run the app `streamlit run app.py`
 
 ## References
 
