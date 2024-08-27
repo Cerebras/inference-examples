@@ -1,5 +1,5 @@
 https://cerebras-cloud-sdk.s3.amazonaws.com/production/llama_index_llms_cerebras-0.1.0-py3-none-any.whl
 llama-index
 streamlit
-https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/test/cerebras_cloud_sdk-0.5.0-py3-none-any.whl
+cerebras_cloud_sdk
 llama-index-callbacks-arize-phoenix

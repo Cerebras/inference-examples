@@ -1,4 +1,4 @@
-https://cerebras-cloud-sdk.s3.us-west-1.amazonaws.com/dev/cerebras_cloud_sdk-0.6.0-py3-none-any.whl
+cerebras_cloud_sdk
 beautifulsoup4==4.12.3
 fireworks_ai==0.15.0
 matplotlib==3.7.5
