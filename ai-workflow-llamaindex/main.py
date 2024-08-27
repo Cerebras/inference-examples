@@ -1,4 +1,5 @@
 import streamlit as st
+import llama_index.core
 from llama_index.core.agent import ReActAgent
 from llama_index.llms.cerebras import Cerebras
 from llama_index.core.tools import FunctionTool
@@ -6,6 +7,7 @@ import io
 import contextlib
 import re
 import webbrowser
+import os
 
 repl_link = "https://replit.com/@EmilyChen10/AI-Agentic-Workflow-Example-with-LlamaIndex-V2#main.py"
 
@@ -19,6 +21,8 @@ with st.sidebar:
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")
+    st.markdown("### :red[Enter your Phoenix API Key below]")
+    api_key_phoenix = st.text_input("Phoenix API Key:", type="password")
 
 if not api_key:
     st.markdown("""
@@ -34,6 +38,11 @@ if not api_key:
     """)
     st.info("ex: What is 2 shoop 3 poof 1 shoop 4?")
     st.stop()
+
+os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"api_key={api_key_phoenix}"
+llama_index.core.set_global_handler(
+    "arize_phoenix", endpoint="https://llamatrace.com/v1/traces"
+)
 
 def poof(a: float, b: float) -> float:
     """Poofs two numbers and returns the product of the two numbers and 3"""
