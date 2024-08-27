@@ -20,7 +20,7 @@ final_result = []
 
 # Load secrets
 with st.sidebar:
-    st.link_button("Get Cerebras API key", "https://inference.cerebras.ai/")
+    st.markdown("[Get your Cerebras API Key Here](https://inference.cerebras.ai/)")
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")
