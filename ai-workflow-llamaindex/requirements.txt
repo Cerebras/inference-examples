@@ -1,4 +1,4 @@
-https://cerebras-cloud-sdk.s3.amazonaws.com/production/llama_index_llms_cerebras-0.1.0-py3-none-any.whl
+llama-index-llms-cerebras
 llama-index
 streamlit
 cerebras_cloud_sdk
