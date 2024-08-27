@@ -24,7 +24,7 @@ Currently, the Cerebras API provides access to two models: Meta’s Llama 3.1 8B
 
 ## 📚 Resources
 
-- [Play with our live chatbot demo]([https://google.com](https://inference.cerebras.ai/)
+- [Play with our live chatbot demo](https://inference.cerebras.ai/)
 - [Experiment with our inference solution in the playground](https://cloud.cerebras.ai/)
 - [Explore our API reference documentation](https://inference-docs.cerebras.ai/api-reference/chat-completions)
 
