@@ -1,5 +1,4 @@
 import os
-import webbrowser
 import streamlit as st
 import weaviate
 from langchain_weaviate import WeaviateVectorStore
@@ -21,15 +20,12 @@ def upload_vectors(texts, embeddings, progress_bar, cilent):
 
     return vector_store
 
-api_link = "https://inference.cerebras.ai/"
-
 st.set_page_config(page_icon="🤖", layout="wide", page_title="Cerebras")
 st.subheader("PDF Q&A with Weaviate 📄", divider="orange", anchor=False)
 
 # Load secrets
 with st.sidebar:
-    if st.button('Get your Cerebras API Key', type='secondary'):
-        webbrowser.open(api_link)
+    st.link_button("Get Cerebras API key", "https://inference.cerebras.ai/")
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     CEREBRAS_API_KEY = st.text_input("Cerebras API Key:", type="password")
