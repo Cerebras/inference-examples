@@ -8,6 +8,7 @@ from typing import Annotated
 from langgraph.graph import END
 from langchain_cerebras import ChatCerebras
 from langchain_community.tools import DuckDuckGoSearchRun
+import webbrowser
 
 # Add tracing in LangSmith
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -17,8 +18,12 @@ st.title("A Three Person Job: Blog Writing with Multi Agentic Workflow ✏️")
 
 final_result = []
 
+api_link = "https://inference.cerebras.ai/"
+
 # Load secrets
 with st.sidebar:
+    if st.button('Get your Cerebras API Key', type='secondary'):
+        webbrowser.open(api_link)
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")

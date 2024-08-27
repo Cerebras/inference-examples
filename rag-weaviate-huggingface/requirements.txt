@@ -8,3 +8,4 @@ pypdf
 weaviate-client
 sentence-transformers
 cerebras_cloud_sdk
+webbrowser
