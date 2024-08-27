@@ -9,15 +9,12 @@ import re
 import webbrowser
 import os
 
-repl_link = "https://replit.com/@EmilyChen10/AI-Agentic-Workflow-Example-with-LlamaIndex-V2#main.py"
-
 # Start of Streamlit Application
 st.title("AlienMath 🧮👽")
 
 # Load secrets
 with st.sidebar:
-    if st.button('Spin up your own on Repl.it :material/code:', type='secondary'):
-        webbrowser.open(repl_link)
+    st.markdown("[Get your Cerebras API Key Here](https://inference.cerebras.ai/)")
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     api_key = st.text_input("Cerebras API Key:", type="password")
