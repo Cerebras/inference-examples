@@ -21,15 +21,15 @@ def upload_vectors(texts, embeddings, progress_bar, cilent):
 
     return vector_store
 
-repl_link = "https://replit.com/@EmilyChen42/RAG-with-Weaviate#main.py"
+api_link = "https://inference.cerebras.ai/"
 
 st.set_page_config(page_icon="🤖", layout="wide", page_title="Cerebras")
 st.subheader("PDF Q&A with Weaviate 📄", divider="orange", anchor=False)
 
 # Load secrets
 with st.sidebar:
-    if st.button('Spin up your own on Repl.it :material/code:', type='secondary'):
-        webbrowser.open(repl_link)
+    if st.button('Get your Cerebras API Key', type='secondary'):
+        webbrowser.open(api_link)
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     CEREBRAS_API_KEY = st.text_input("Cerebras API Key:", type="password")
