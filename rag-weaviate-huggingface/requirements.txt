@@ -2,6 +2,7 @@ langchain
 langchain-core
 langchain-community
 langchain-cerebras
+langchain-weaviate
 streamlit
 pypdf
 weaviate-client
