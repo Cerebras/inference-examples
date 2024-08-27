@@ -25,7 +25,6 @@ st.subheader("PDF Q&A with Weaviate 📄", divider="orange", anchor=False)
 
 # Load secrets
 with st.sidebar:
-    st.link_button("Get Cerebras API key", "https://inference.cerebras.ai/")
     st.title("Settings")
     st.markdown("### :red[Enter your Cerebras API Key below]")
     CEREBRAS_API_KEY = st.text_input("Cerebras API Key:", type="password")
@@ -33,6 +32,7 @@ with st.sidebar:
     WEAVIATE_URL = st.text_input("Weaviate URL:", type="password")
     st.markdown("### :red[Enter your Weaviate API Key below]")
     WEAVIATE_API_KEY = st.text_input("Weaviate API Key:", type="password")
+    st.markdown("[Get your Cerebras API Key Here](https://inference.cerebras.ai/)")
 
 if not CEREBRAS_API_KEY or not WEAVIATE_URL or not WEAVIATE_API_KEY:
     st.markdown("""
