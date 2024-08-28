@@ -6,6 +6,8 @@ This project is an automated marketing agent that uses Large Language Models (LL
 
 The Marketing Agent is designed as an LLM agent that emulates a typical workflow for generating marketing copy. It demonstrates how to build hybrid software that mixes traditional software with LLMs to automate complex decision-making processes both robustly and flexibly.
 
+In addition to the code base, we've released a [blog post](https://cerebras.ai/blog/integrating-llms-and-software-engineering-for-self-refining-copy-creation) walking readers through the project.
+
 ## Features
 
 - Generate marketing campaigns based on product descriptions
