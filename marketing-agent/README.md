@@ -19,5 +19,5 @@ The Marketing Agent is designed as an LLM agent that emulates a typical workflow
 
 ## Setup
 
-1. please consult the setup in the respective README files for both (server)[https://github.com/Cerebras/inference-examples/tree/main/marketing-agent/server] and (client)[https://github.com/Cerebras/inference-examples/tree/main/marketing-agent/client]
+1. please consult the setup in the respective README files for both [server](https://github.com/Cerebras/inference-examples/tree/main/marketing-agent/server) and [client](https://github.com/Cerebras/inference-examples/tree/main/marketing-agent/client)
 2. run `bash run.sh` to start the server and client from the project root
