@@ -50,8 +50,3 @@ This project demonstrates how to create hybrid software that combines traditiona
 
 The project is designed to take advantage of fast inference capabilities, such as those provided by the Cerebras API. This is particularly beneficial for the iterative copy improvement process, which can require multiple sequential LLM generations.
 
-## Contact
-
-[Cerebras] - [email for point of contact]
-
-Project Link: [link to repo where this will be hosted](http://link)
