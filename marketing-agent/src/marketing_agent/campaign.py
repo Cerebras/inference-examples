@@ -182,6 +182,7 @@ class Campaign:
                 MARKETS=yaml.dump(market.model_dump()),
                 DEMOGRAPHICS=yaml.dump(audience.demographics),
                 CHANNEL=channel.name,
+                COPY_FORMAT=channel.copy_format,
                 TASK=(
                     "Generate a strategy for generating a COPY_FORMAT for the "
                     "VALUE_PROPOSITION targeting the DEMOGRAPHICS through the CHANNEL. "
@@ -287,7 +288,7 @@ class Campaign:
             USAGE_MODEL=angle.usage,
             TASK=(
                 "Using available market research, suggest some markets where "
-                "VALUE_PROPOSITION through USAGE would be useful."
+                "VALUE_PROPOSITION through USAGE_MODEL would be useful."
             ),
         )
 
