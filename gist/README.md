@@ -2,6 +2,8 @@
 
 ## Overview
 
+![ReadAgent](images/gist.git)
+
 This project implements Google DeepMind’s ReadAgent using the Cerebras SDK. It leverages the ReadAgent workflow to enable users to interactively chat with Arxiv papers. Try our demo here! 
 
 ReadAgent is an AI agent designed to enhance the capabilities of Large Language Models (LLMs) in processing and understanding long contexts through a method called memory gisting. Inspired by human reading patterns, ReadAgent employs a novel approach centered around the concept of “gist memories” to break down, summarize, and intelligently retrieve information from lengthy texts, such as books or extensive documents.
