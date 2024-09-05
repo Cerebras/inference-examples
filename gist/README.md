@@ -2,7 +2,7 @@
 
 ## Overview
 
-![ReadAgent](images/gist.git)
+![ReadAgent](images/gist.gif)
 
 This project implements Google DeepMind’s ReadAgent using the Cerebras SDK. It leverages the ReadAgent workflow to enable users to interactively chat with Arxiv papers. Try our demo here! 
 
