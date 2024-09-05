@@ -10,7 +10,7 @@ This project implements Google DeepMind’s ReadAgent using the Cerebras SDK. It
 
 ReadAgent is an AI agent designed to enhance the capabilities of Large Language Models (LLMs) in processing and understanding long contexts through a method called memory gisting. Inspired by human reading patterns, ReadAgent employs a novel approach centered around the concept of “gist memories” to break down, summarize, and intelligently retrieve information from lengthy texts, such as books or extensive documents.
 
-For a detailed description of ReadAgent’s workflow, please refer to our [blog post](https://cerebras.ai/blog/readagent-bringing-gist-memory-to-ai) and the [original paper](https://arxiv.org/abs/2402.09727) by Google DeepMind.
+For a detailed description of ReadAgent’s workflow, please refer to our [blog post](https://cerebras.ai/blog/readagent-bringing-gist-memory-to-ai) and the [original paper](https://arxiv.org/abs/2402.09727) by Google DeepMind. You can also see our demo of ReadAgent [here](https://gist-app.replit.app/). To obtain a Cereberas Inference SDK API key, please visit our [QuickStart guide](https://inference-docs.cerebras.ai/quickstart). 
 
 ReadAgent's workflow involves multiple prompts to the LLM at each step to create pages, generate summaries, and retrieve relevant information. As a result, the efficiency of ReadAgent heavily depends on a low-latency LLM inference solution, like the one provided by Cerebras.
 
