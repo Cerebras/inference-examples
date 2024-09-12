@@ -20,6 +20,10 @@ class CopyPiece:
         content: The generated content for the copy.
     """
 
+    _copy_class_name: str
+    _metadata_class: type[BaseModel]
+    _content_class: Union[str, type[BaseModel]]
+
     def __init__(
         self,
         llm: AsyncLLMEngine,
@@ -57,7 +61,11 @@ class CopyPiece:
         self.content = None
 
         # Retrieve the copy classes based on the channel's copy format
-        self.plugin = copy_plugins[channel.copy_format]
+        copy_classes = copy_plugins[channel.copy_format]
+
+        self._copy_class_name = copy_classes.name
+        self._metadata_class = copy_classes.metadata_class
+        self._content_class = copy_classes.content_class
 
     async def initialize(self):
         """
@@ -71,7 +79,7 @@ class CopyPiece:
 
         # Generate the metadata
         metadata = await self._llm.query_structured(
-            self.plugin.metadata_class,
+            self._metadata_class,
             PROBLEM_STATEMENT=self._angle.problem_addressed,
             VALUE_PROPOSITION=self._angle.value_proposition,
             AUDIENCE_PROFILE=self._audience.profile,
@@ -80,7 +88,7 @@ class CopyPiece:
             PRODUCT_POSITIONING=self._strategy.product_positioning,
             COMPETITIVE_CLAIM=self._strategy.competitive_claim,
             TASK=(
-                f"Generate a {self.plugin.name} for the PROBLEM_STATEMENT and "
+                f"Generate a {self._copy_class_name} for the PROBLEM_STATEMENT and "
                 "VALUE_PROPOSITION targeting the AUDIENCE_PROFILE with "
                 "the DEMOGRAPHICS."
             ),
@@ -93,7 +101,7 @@ class CopyPiece:
 
         # Generate the content
         content = await self._llm.query_structured(
-            self.plugin.content_class,
+            self._content_class,
             PROBLEM_STATEMENT=self._angle.problem_addressed,
             VALUE_PROPOSITION=self._angle.value_proposition,
             AUDIENCE_PROFILE=self._audience.profile,
@@ -103,7 +111,7 @@ class CopyPiece:
             COMPETITIVE_CLAIM=self._strategy.competitive_claim,
             METADATA=metadata_string,
             TASK=(
-                f"Generate a {self.plugin.name} with METADATA for the PROBLEM_STATEMENT "
+                f"Generate a {self._copy_class_name} with METADATA for the PROBLEM_STATEMENT "
                 "and VALUE_PROPOSITION targeting the AUDIENCE_PROFILE with the "
                 "DEMOGRAPHICS."
             ),
@@ -133,7 +141,7 @@ class CopyPiece:
             METADATA=self.metadata,
             CONTENT=self.content,
             TASK=(
-                f"The METADATA and CONTENT are for a {self.plugin.name} for Evaluate the "
+                f"The METADATA and CONTENT are for a {self._copy_class_name} for Evaluate the "
                 "METADATA and CONTENT. List the pros and cons of each. Then suggest "
                 "improvements."
             ),
@@ -141,7 +149,7 @@ class CopyPiece:
 
         # Generate the updated metadata
         metadata = await self._llm.query_structured(
-            self.plugin.metadata_class,
+            self._metadata_class,
             PROBLEM_STATEMENT=self._angle.problem_addressed,
             VALUE_PROPOSITION=self._angle.value_proposition,
             AUDIENCE_PROFILE=self._audience.profile,
@@ -152,7 +160,7 @@ class CopyPiece:
             METADATA=self.metadata,
             EVALUATION=evaluation,
             TASK=(
-                f"The METADATA describes a {self.plugin.name}. Improve the METADATA based on the "
+                f"The METADATA describes a {self._copy_class_name}. Improve the METADATA based on the "
                 "EVALUATION."
             ),
         )
@@ -164,7 +172,7 @@ class CopyPiece:
 
         # Generate the updated content
         content = await self._llm.query_structured(
-            self.plugin.content_class,
+            self._content_class,
             PROBLEM_STATEMENT=self._angle.problem_addressed,
             VALUE_PROPOSITION=self._angle.value_proposition,
             AUDIENCE_PROFILE=self._audience.profile,
@@ -173,10 +181,10 @@ class CopyPiece:
             PRODUCT_POSITIONING=self._strategy.product_positioning,
             COMPETITIVE_CLAIM=self._strategy.competitive_claim,
             METADATA=metadata_string,
-            EVALUATION=evaluation,
             CONTENT=self.content,
+            EVALUATION=evaluation,
             TASK=(
-                f"The CONTENT is for a {self.plugin.name} with METADATA. Improve the CONTENT "
+                f"The CONTENT is for a {self._copy_class_name} with METADATA. Improve the CONTENT "
                 "based on the EVALUATION."
             ),
         )

@@ -10,8 +10,6 @@ This project is an automated marketing agent that uses Large Language Models (LL
 
 The Marketing Agent is designed as an LLM agent that emulates a typical workflow for generating marketing copy. It demonstrates how to build hybrid software that mixes traditional software with LLMs to automate complex decision-making processes both robustly and flexibly.
 
-Visit our [demo](https://marketing-assistant.ai4m.com/) to try marketing agent for yourself. 
-
 ## Features
 
 - Generate marketing campaigns based on product descriptions
