@@ -37,10 +37,12 @@ import os
 import openai
 import braintrust
 
-client = braintrust.wrap_openai(openai.OpenAI(
-    api_key=os.getenv("CEREBRAS_API_KEY"),
-    base_url="https://api.cerebras.ai/v1",
-))
+client = braintrust.wrap_openai(
+    openai.OpenAI(
+        api_key=os.getenv("CEREBRAS_API_KEY"),
+        base_url="https://api.cerebras.ai/v1",
+    )
+)
 ```
 
 ## Examples
