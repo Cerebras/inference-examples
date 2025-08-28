@@ -1,0 +1,37 @@
+[project]
+name = "llm-realtime-news-analysis"
+version = "0.1.0"
+description = "A real-time news analysis pipeline using Google News, FastAPI, Streamlit, and Cerebras."
+authors = [{ name = "Cascade", email = "cascade@windsurf.ai" }]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "requests",
+    "feedparser",
+    "python-dotenv",
+    "websockets",
+    "aiohttp",
+    "pydantic",
+    "loguru",
+    "openai",
+    "pip>=25.2",
+    "click>=8.2.1",
+    "httpx",
+    "typer",
+    "rich",
+    "colorama",
+    "jinja2",
+    "h11",
+    "starlette>=0.47.3",
+    "pydantic-core",
+    "typing-extensions",
+    "typing-inspection>=0.4.1",
+    "pandas",
+    "annotated-types>=0.7.0",
+]
+
+[tool.setuptools]
+packages = ["src"]
+package-dir = {"" = "backend"}
+
