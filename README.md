@@ -4,23 +4,9 @@ Welcome to the **Cerebras Inference API** demo repository! This repository conta
 
 ## 🚀 Introduction
 
-The **Cerebras API** offers developers a low-latency solution for AI model inference powered by Cerebras Wafer-Scale Engines and CS-3 systems. We invite developers to explore the new possibilities that our high-speed inferencing solution unlocks.
+The **Cerebras Inference API** offers developers a low-latency solution for AI model inference powered by Cerebras Wafer-Scale Engines and CS-3 systems. We invite developers to explore the new possibilities that our high-speed inferencing solution unlocks.
 
-Currently, the Cerebras API provides access to two models: Meta’s Llama 3.1 8B and 70B models. Both models are instruction-tuned and can be used for conversational applications.
-
-### 🧠 Models Available
-
-- **Llama-3.1-8B**
-  - **Parameters**: 8 billion
-  - **Knowledge Cutoff**: March 2023
-  - **Context Length**: 8192
-  - **Training Tokens**: 15 trillion
-
-- **Llama-3.3-70B**
-  - **Parameters**: 70 billion
-  - **Knowledge Cutoff**: December 2023
-  - **Context Length**: 8192
-  - **Training Tokens**: 15 trillion
+The Cerebras Inference API provides access to models such as OpenAI's GPT-OSS, Meta's Llama family of models, and Alibaba's Qwen models. For the full details of supported models, see the [supported models documentation](https://inference-docs.cerebras.ai/models/overview).
 
 ## 📚 Resources
 
