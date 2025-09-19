@@ -18,6 +18,8 @@ The Cerebras Inference API provides access to models such as OpenAI's GPT-OSS, M
 
 This repository contains multiple example projects, each demonstrating different capabilities of the Cerebras Inference API. Each project is located in its own folder and contains a detailed README.
 
+[![Open Val Town Template](https://stevekrouse-badge.web.val.run/?3)](https://www.val.town/v/stevekrouse/cerebrasTemplate)
+
 ### 🔗 Example Projects
 
 - **[Getting Started with Cerebras Inference API](./getting-started/README.md)**
