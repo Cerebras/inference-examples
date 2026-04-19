@@ -292,53 +292,67 @@ def _pct(values: list[float], p: int) -> float:
 
 
 def render_chart(all_stats: list[Stats], path: str) -> None:
+    """Two-panel chart: TTFT (left) and E2E (right), each with p50 and p90 bars."""
     encodings = [s.encoding for s in all_stats]
-    ttft_p50 = [s.ttft_p50 for s in all_stats]
-    e2e_p50 = [s.e2e_p50 for s in all_stats]
-
-    x = range(len(encodings))
+    x = list(range(len(encodings)))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(8, 5))
-    bars_ttft = ax.bar([i - width / 2 for i in x], ttft_p50, width, label="TTFT (p50)")
-    bars_e2e = ax.bar([i + width / 2 for i in x], e2e_p50, width, label="E2E (p50)")
 
-    ax.set_xticks(list(x))
-    ax.set_xticklabels(encodings)
-    ax.set_ylabel("Seconds")
-    ax.set_title(
-        f"Cerebras payload compression\n"
-        f"{TARGET_INPUT_TOKENS // 1000}k input / {OUTPUT_TOKENS} output tokens, "
-        f"n={NUM_RUNS}, {MODEL}"
-    )
-    ax.legend(loc="upper right")
-    ax.grid(axis="y", alpha=0.3)
+    fig, (ax_ttft, ax_e2e) = plt.subplots(1, 2, figsize=(12, 5.5), sharey=True)
 
-    for bars in (bars_ttft, bars_e2e):
-        for bar in bars:
-            h = bar.get_height()
+    panels = [
+        (ax_ttft, "TTFT (time to first token)",
+         [s.ttft_p50 for s in all_stats],
+         [s.ttft_p90 for s in all_stats]),
+        (ax_e2e, "E2E (full response)",
+         [s.e2e_p50 for s in all_stats],
+         [s.e2e_p90 for s in all_stats]),
+    ]
+
+    for ax, panel_title, p50s, p90s in panels:
+        bars_p50 = ax.bar([i - width / 2 for i in x], p50s, width,
+                          label="p50", color="#1f77b4")
+        bars_p90 = ax.bar([i + width / 2 for i in x], p90s, width,
+                          label="p90", color="#ff7f0e")
+
+        ax.set_xticks(x)
+        ax.set_xticklabels(encodings)
+        ax.set_title(panel_title)
+        ax.grid(axis="y", alpha=0.3)
+
+        for bars in (bars_p50, bars_p90):
+            for bar in bars:
+                h = bar.get_height()
+                ax.annotate(
+                    f"{h:.2f}s",
+                    xy=(bar.get_x() + bar.get_width() / 2, h),
+                    xytext=(0, 3),
+                    textcoords="offset points",
+                    ha="center",
+                    fontsize=9,
+                )
+
+        for i, s in enumerate(all_stats):
+            size_kb = s.bytes_sent / 1024
+            label = f"{size_kb:.0f} KB" if size_kb >= 1 else f"{s.bytes_sent} B"
             ax.annotate(
-                f"{h:.2f}s",
-                xy=(bar.get_x() + bar.get_width() / 2, h),
-                xytext=(0, 3),
+                f"body: {label}",
+                xy=(i, 0),
+                xytext=(0, -28),
                 textcoords="offset points",
                 ha="center",
                 fontsize=9,
+                color="#555",
             )
 
-    for i, s in enumerate(all_stats):
-        size_kb = s.bytes_sent / 1024
-        label = f"{size_kb:.0f} KB" if size_kb >= 1 else f"{s.bytes_sent} B"
-        ax.annotate(
-            f"body: {label}",
-            xy=(i, 0),
-            xytext=(0, -28),
-            textcoords="offset points",
-            ha="center",
-            fontsize=9,
-            color="#555",
-        )
+    ax_ttft.set_ylabel("Seconds")
+    ax_ttft.legend(loc="upper right")
 
-    plt.tight_layout()
+    fig.suptitle(
+        f"Cerebras payload compression: {TARGET_INPUT_TOKENS // 1000}k input / "
+        f"{OUTPUT_TOKENS} output tokens, n={NUM_RUNS}, {MODEL}",
+        fontsize=12,
+    )
+    plt.tight_layout(rect=(0, 0, 1, 0.94))
     plt.savefig(path, dpi=150)
     print(f"\nSaved chart to {path}")
 
