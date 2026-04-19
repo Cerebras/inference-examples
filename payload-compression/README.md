@@ -1,12 +1,12 @@
 # Payload Compression (msgpack + gzip)
 
-Cerebras Inference accepts compressed request bodies on `/v1/chat/completions` and `/v1/completions`. For large prompts (long conversations, RAG context, code-review workloads) this shrinks the request dramatically — which cuts the network transfer time and therefore **TTFT** (time to first token) and **E2E** (end-to-end) latency.
+Cerebras Inference accepts compressed request bodies on `/v1/chat/completions` and `/v1/completions`. For large prompts (e.g. long conversations, RAG context, code-review workloads) this shrinks the request dramatically — which cuts the network transfer time and therefore **TTFT** (time to first token) and **E2E** (end-to-end) latency.
 
 This example focuses on the strongest combination — **msgpack (inner) + gzip (outer)** — and shows:
 
 1. **[`simple_example.py`](./simple_example.py)** — the minimal code to send a compressed request.
-2. **[`benchmark.py`](./benchmark.py)** — a benchmark that measures TTFT and E2E across 5 runs × 2 encodings on a ~20k-token coding-review prompt.
-3. **[Results](#3-results)** — the chart and table produced by `benchmark.py` (committed here so you can see the numbers without running it).
+2. **[`benchmark.py`](./benchmark.py)** — a benchmark that measures TTFT and E2E across 5 runs × 2 encodings on a ~30k-token coding-review prompt.
+3. **[Results](#3-results)** — the chart and table produced by executing `benchmark.py` (committed here so you can see the numbers without running it).
 
 The API also supports msgpack alone and gzip alone; the Cerebras [payload-optimization docs](https://inference-docs.cerebras.ai/capabilities/payload-optimization) cover those. msgpack+gzip gives the best reduction, so that's what this example uses.
 
@@ -47,12 +47,12 @@ The server enforces a **51 MB decompressed-body limit**; larger requests return 
 
 ## 2. Benchmark methodology
 
-- **Prompt**: one deterministic ~20k-token user message built by repeating a realistic Python code block and appending a specific review question. Byte-identical across all runs — see the note on KV cache below. (20k chosen because `llama-3.1-8b` has a 32k context window.)
-- **Response**: `max_tokens=200`, streaming (`stream: true`), so we can measure TTFT directly.
+- **Prompt**: one deterministic ~30k-token user message built by repeating a realistic Python code block and appending a specific review question. Byte-identical across all runs — see the note on KV cache below. (30k chosen to stay well under `llama-3.1-8b`'s 32k context window.)
+- **Response**: `max_tokens=10`, streaming (`stream: true`), so we can measure TTFT directly without letting generation dominate end-to-end time.
 - **Encodings**: `json` (baseline) and `msgpack+gzip`.
 - **Runs**: 1 warmup (discarded) + 5 measured runs per encoding.
 - **Metrics**: TTFT (request sent → first content token received) and E2E (request sent → stream ends). Reported as p50, p90, and average.
-- **Model**: `llama-3.1-8b` (chosen for stable throughput; less queueing variance than the larger models).
+- **Model**: `llama-3.1-8b`.
 - **Rate limits**: the script retries on HTTP 429 (Tokens-Per-Minute limit) honoring the `Retry-After` header — this can extend total runtime.
 
 ### KV cache note
@@ -67,15 +67,16 @@ If you want to measure a cold-cache scenario, vary the prompt across runs (e.g.,
 
 | Encoding | Bytes Sent | TTFT p50 | TTFT p90 | TTFT avg | E2E p50 | E2E p90 | E2E avg |
 |---|---|---|---|---|---|---|---|
-| json | 72.3 KB | 0.56s | 1.03s | 0.71s | 0.62s | 1.10s | 0.76s |
-| msgpack+gzip | 1.7 KB | 0.42s | 0.47s | 0.43s | 0.53s | 0.55s | 0.52s |
+| json | 123.4 KB | 1.05s | 4.14s | 2.01s | 1.12s | 4.14s | 2.05s |
+| msgpack+gzip | 2.0 KB | 0.46s | 1.68s | 0.87s | 0.47s | 1.71s | 0.88s |
 
-On this run (`llama-3.1-8b`, 20k-token input, 5 measured runs per encoding):
+On this run (`llama-3.1-8b`, 30k-token input, `max_tokens=10`, 5 measured runs per encoding):
 
-- **Body size**: 72.3 KB → 1.7 KB — **97.7% smaller**.
-- **TTFT p50**: 0.56s → 0.42s — **~25% faster** to the first token.
-- **TTFT p90**: 1.03s → 0.47s — **~55% faster** at the tail; variance drops sharply because upload time no longer dominates outliers.
-- **E2E p90**: 1.10s → 0.55s — **~50% faster** end-to-end.
+- **Body size**: 123.4 KB → 2.0 KB — **98.4% smaller**.
+- **TTFT p50**: 1.05s → 0.46s — **~56% faster** to the first token (more than 2×).
+- **TTFT p90**: 4.14s → 1.68s — **~59% faster** at the tail.
+- **E2E p50**: 1.12s → 0.47s — **~58% faster** end-to-end.
+- **TTFT avg**: 2.01s → 0.87s — **~57% faster** on average.
 
 The compressed encoding is both faster _and_ more stable: the tail latency (p90) is what users actually feel, and this is where compression pays off most.
 
@@ -92,7 +93,7 @@ export CEREBRAS_API_KEY=sk-...
 # Part 1: one compressed request, ~1 second
 python simple_example.py
 
-# Part 2: full benchmark, ~2-5 min depending on TPM limits
+# Part 2: full benchmark, ~10-15 min depending on TPM limits
 python benchmark.py
 ```
 
