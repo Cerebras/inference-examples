@@ -1,7 +1,7 @@
 """Benchmark Cerebras Inference payload compression: plain JSON vs msgpack+gzip.
 
 Measures TTFT (time-to-first-token) and E2E (request sent -> last token) across
-10 streaming requests per encoding for a ~64k-token coding-review prompt.
+10 streaming requests per encoding for a ~30k-token coding-review prompt.
 
 Writes:
 - results.png  (grouped bar chart: TTFT and E2E per encoding)
@@ -31,7 +31,7 @@ TARGET_INPUT_TOKENS = 30_000
 CHARS_PER_TOKEN = 4.0  # empirical for this code-block content; tune if your prompt type differs
 MAX_DECOMPRESSED_BYTES = 40 * 1024 * 1024  # 40MB guardrail; server cap is 51MB
 
-# A realistic-looking code block we repeat to build the ~64k-token prompt.
+# A realistic-looking code block we repeat to build the prompt.
 # Same bytes every run => identical server-side KV cache state across encodings.
 CODE_BLOCK = '''\
 class RequestContext:
@@ -147,7 +147,7 @@ class Stats:
 
 
 def build_prompt() -> list[dict]:
-    """Deterministic ~64k-token user message. Identical bytes every call."""
+    """Deterministic ~30k-token user message. Identical bytes every call."""
     target_chars = int(TARGET_INPUT_TOKENS * CHARS_PER_TOKEN)
     parts: list[str] = []
     i = 0
