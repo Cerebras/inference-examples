@@ -12,7 +12,7 @@ import httpx
 import msgpack
 
 API_URL = "https://api.cerebras.ai/v1/chat/completions"
-MODEL = "llama-3.1-8b"
+MODEL = "gpt-oss-120b"
 
 api_key = os.environ.get("CEREBRAS_API_KEY")
 if not api_key:
@@ -21,7 +21,7 @@ if not api_key:
 payload = {
     "model": MODEL,
     "messages": [{"role": "user", "content": "Explain payload compression in one sentence."}],
-    "max_tokens": 128,
+    "max_tokens": 1024,
 }
 
 plain_json = json.dumps(payload).encode()

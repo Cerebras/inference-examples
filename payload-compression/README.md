@@ -4,9 +4,9 @@ Cerebras Inference accepts compressed request bodies on `/v1/chat/completions` a
 
 This example focuses on the strongest combination — **msgpack (inner) + gzip (outer)** — and shows:
 
-1. **[`simple_example.py`](./simple_example.py)** — the minimal code to send a compressed request.
-2. **[`benchmark.py`](./benchmark.py)** — a benchmark that measures TTFT and E2E across 5 runs × 2 encodings on a ~30k-token coding-review prompt.
-3. **[Results](#3-results)** — the chart and table produced by executing `benchmark.py` (committed here so you can see the numbers without running it).
+1. [simple_example.py](./simple_example.py) — the minimal code to send a compressed request.
+2. [benchmark.py](./benchmark.py) — a benchmark that measures TTFT and E2E across 5 runs × 2 encodings on a ~30k-token coding-review prompt.
+3. [Results](#3-results) — the chart and table produced by executing `benchmark.py` with an example model
 
 The API also supports msgpack alone and gzip alone; the Cerebras [payload-optimization docs](https://inference-docs.cerebras.ai/capabilities/payload-optimization) cover those. msgpack+gzip gives the best reduction, so that's what this example uses.
 
@@ -14,18 +14,19 @@ The API also supports msgpack alone and gzip alone; the Cerebras [payload-optimi
 
 Three things differ from a plain-JSON request:
 
-- **Body** is `gzip.compress(msgpack.packb(payload))`. msgpack must be inside, gzip outside — the order is not swappable.
+- **Body** is `gzip.compress(msgpack.packb(payload))` (msgpack must be inside, gzip outside. Order is not swappable.)
 - **`Content-Type: application/vnd.msgpack`** (tells the server the decompressed body is msgpack).
 - **`Content-Encoding: gzip`** (tells the server to decompress before parsing).
 
+Here's example code using `gpt-oss-120b` model, you can swap the model to any other supported model. 
 ```python
 import gzip, json, os, httpx, msgpack
 
 api_key = os.environ["CEREBRAS_API_KEY"]
 payload = {
-    "model": "llama-3.1-8b",
+    "model": "gpt-oss-120b",
     "messages": [{"role": "user", "content": "Explain payload compression in one sentence."}],
-    "max_tokens": 128,
+    "max_tokens": 1024,
 }
 
 body = gzip.compress(msgpack.packb(payload))
@@ -43,16 +44,14 @@ print(r.json()["choices"][0]["message"]["content"])
 
 On a trivially small payload like this you'll see something like `Sent 210 compressed bytes (vs 195 plain JSON — -7.7% smaller)`: compression can actually *grow* sub-KB payloads. That's expected. The point of the feature is large payloads — see the benchmark.
 
-The server enforces a **51 MB decompressed-body limit**; larger requests return HTTP 413.
-
 ## 2. Benchmark methodology
 
-- **Prompt**: one deterministic ~30k-token user message built by repeating a realistic Python code block and appending a specific review question. Byte-identical across all runs — see the note on KV cache below. (30k chosen to stay well under `llama-3.1-8b`'s 32k context window.)
-- **Response**: `max_tokens=10`, streaming (`stream: true`), so we can measure TTFT directly without letting generation dominate end-to-end time.
+- **Model**: This benchmark uses `llama-3.1-8b`, a simple and small model, for demonstration purposes. You can swap this model to any other supported model.
+- **Prompt**: one deterministic ~30k token user message built by repeating a realistic Python code block and appending a specific review question. Byte-identical across all runs — see the note on KV cache below. (30k chosen to stay well under `llama-3.1-8b`'s 32k context window.)
+- **Response**: `max_tokens=1024`, streaming (`stream: true`), so we can measure both TTFT and an end-to-end latency that reflects a realistic generation length.
 - **Encodings**: `json` (baseline) and `msgpack+gzip`.
 - **Runs**: 1 warmup (discarded) + 5 measured runs per encoding.
 - **Metrics**: TTFT (request sent → first content token received) and E2E (request sent → stream ends). Reported as p50, p90, and average.
-- **Model**: `llama-3.1-8b`.
 - **Rate limits**: the script retries on HTTP 429 (Tokens-Per-Minute limit) honoring the `Retry-After` header — this can extend total runtime.
 
 ### KV cache note
@@ -67,16 +66,16 @@ If you want to measure a cold-cache scenario, vary the prompt across runs (e.g.,
 
 | Encoding | Bytes Sent | TTFT p50 | TTFT p90 | TTFT avg | E2E p50 | E2E p90 | E2E avg |
 |---|---|---|---|---|---|---|---|
-| json | 123.4 KB | 1.05s | 4.14s | 2.01s | 1.12s | 4.14s | 2.05s |
-| msgpack+gzip | 2.0 KB | 0.46s | 1.68s | 0.87s | 0.47s | 1.71s | 0.88s |
+| json | 123.4 KB | 0.66s | 1.61s | 0.97s | 0.80s | 1.68s | 1.09s |
+| msgpack+gzip | 2.0 KB | 0.46s | 0.61s | 0.51s | 0.61s | 0.71s | 0.63s |
 
-On this run (`llama-3.1-8b`, 30k-token input, `max_tokens=10`, 5 measured runs per encoding):
+On this run (`llama-3.1-8b`, 30k-token input, `max_tokens=1024`, 5 measured runs per encoding):
 
 - **Body size**: 123.4 KB → 2.0 KB — **98.4% smaller**.
-- **TTFT p50**: 1.05s → 0.46s — **~56% faster** to the first token (more than 2×).
-- **TTFT p90**: 4.14s → 1.68s — **~59% faster** at the tail.
-- **E2E p50**: 1.12s → 0.47s — **~58% faster** end-to-end.
-- **TTFT avg**: 2.01s → 0.87s — **~57% faster** on average.
+- **TTFT p50**: 0.66s → 0.46s — **~30% faster** to the first token.
+- **TTFT p90**: 1.61s → 0.61s — **~62% faster** at the tail.
+- **TTFT avg**: 0.97s → 0.51s — **~47% faster** on average.
+- **E2E p90**: 1.68s → 0.71s — **~58% faster** end-to-end at the tail.
 
 The compressed encoding is both faster _and_ more stable: the tail latency (p90) is what users actually feel, and this is where compression pays off most.
 
