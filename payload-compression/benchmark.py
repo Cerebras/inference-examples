@@ -25,7 +25,7 @@ import msgpack
 
 API_URL = "https://api.cerebras.ai/v1/chat/completions"
 MODEL = "llama-3.1-8b"
-NUM_RUNS = 5
+NUM_RUNS = 10
 OUTPUT_TOKENS = 1024
 TARGET_INPUT_TOKENS = 30_000
 CHARS_PER_TOKEN = 4.0  # empirical for this code-block content; tune if your prompt type differs
