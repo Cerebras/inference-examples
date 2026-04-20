@@ -1,2 +1,5 @@
 
 marketing-agent/.DS_Store
+
+payload-compression/.venv/
+payload-compression/__pycache__/

@@ -46,6 +46,9 @@ This repository contains multiple example projects, each demonstrating different
 - **[Multi AI Agentic Workflow](./multi-ai-workflow/README.md)**
   - Create a multi-agentic AI workflow with Langgraph and LangSmith.
 
+- **[Payload Compression (msgpack + gzip)](./payload-compression/README.md)**
+  - Minimal example + benchmark showing msgpack+gzip request-body compression on `/v1/chat/completions` and the TTFT / E2E latency gain on a ~30k-token prompt.
+
 ---
 
 ## 🌟 Getting Started
