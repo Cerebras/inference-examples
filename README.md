@@ -49,6 +49,9 @@ This repository contains multiple example projects, each demonstrating different
 - **[Payload Compression (msgpack + gzip)](./payload-compression/README.md)**
   - Minimal example + benchmark showing msgpack+gzip request-body compression on `/v1/chat/completions` and the TTFT / E2E latency gain on a ~30k-token prompt.
 
+- **[Cerebras with Arize AX](./cerebras-arize-ax/README.md)**
+  - Trace Cerebras Inference calls with Arize AX using OpenInference and the OpenAI-compatible API.
+
 ---
 
 ## 🌟 Getting Started
