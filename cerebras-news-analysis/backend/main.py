@@ -127,7 +127,7 @@ async def get_frontend(request: Request):
 @app.post("/clear")
 async def clear_data():
     """Clears the analyzed articles list."""
-    app_state.analyzed_articles.clear()
+    app_state.processed_articles.clear()
     logger.info("Cleared all analyzed articles.")
     return {"message": "Analyzed articles cleared successfully."}
 

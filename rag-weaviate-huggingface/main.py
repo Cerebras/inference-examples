@@ -9,7 +9,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 
 # Function to upload vectors to Weaviate
-def upload_vectors(texts, embeddings, progress_bar, cilent):
+def upload_vectors(texts, embeddings, progress_bar, client):
     vector_store = WeaviateVectorStore(client=client, index_name="my_class", text_key="text", embedding=embeddings)
     for i in range(len(texts)):
         t = texts[i]
