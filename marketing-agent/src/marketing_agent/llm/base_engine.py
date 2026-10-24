@@ -11,7 +11,7 @@ S = TypeVar("S", bound=Union[str, T])
 
 class LLMEngine(ABC):
     """
-    A class representing an engine for interacting with Language Learning Models
+    A class representing an engine for interacting with Large Language Models
     (LLMs).
 
     This class provides an interface for getting structured outputs.
@@ -38,7 +38,7 @@ class LLMEngine(ABC):
     @abstractmethod
     def query(self, **kwargs):
         """
-        Send a query to the Language Learning Model.
+        Send a query to the Large Language Model.
 
         This is an abstract method that should be implemented by subclasses to interact
         with specific LLM APIs.
@@ -154,7 +154,7 @@ class LLMEngine(ABC):
 
 class AsyncLLMEngine(ABC):
     """
-    A class representing an engine for interacting with Language Learning Models
+    A class representing an engine for interacting with Large Language Models
     (LLMs).
 
     This class provides an interface for getting structured outputs.
@@ -192,7 +192,7 @@ class AsyncLLMEngine(ABC):
     @abstractmethod
     async def query(self, **kwargs):
         """
-        Send a query to the Language Learning Model.
+        Send a query to the Large Language Model.
 
         This is an abstract method that should be implemented by subclasses to interact
         with specific LLM APIs.

@@ -13,7 +13,7 @@ class CopyPiece:
     Represents a piece of copy content for marketing purposes.
 
     This class handles the generation and improvement of copy content
-    using an LLM (Language Learning Model).
+    using an LLM (Large Language Model).
 
     Attributes:
         metadata: The generated metadata for the copy.
@@ -141,7 +141,7 @@ class CopyPiece:
             METADATA=self.metadata,
             CONTENT=self.content,
             TASK=(
-                f"The METADATA and CONTENT are for a {self._copy_class_name} for Evaluate the "
+                f"The METADATA and CONTENT are for a {self._copy_class_name}. Evaluate the "
                 "METADATA and CONTENT. List the pros and cons of each. Then suggest "
                 "improvements."
             ),
