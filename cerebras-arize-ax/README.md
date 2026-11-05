@@ -77,7 +77,7 @@ Traces give teams the raw material for quality work after deployment: reviewing 
 cases, comparing prompt versions, measuring latency and cost, and grading model or agent
 behavior. For more detail, see Arize's guides to
 [LLM evaluation](https://arize.com/resources/llm-evaluation/) and
-[agent evaluation](https://arize.com/guides/ai-agent-handbook/agent-evaluation/).
+[agent evaluation](https://arize.com/ai-agents/agent-evaluation/).
 
 ## Further reading
 
